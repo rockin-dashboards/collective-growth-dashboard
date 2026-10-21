@@ -64,6 +64,9 @@
   .sidebar-sources .spill{display:block;font-size:10.5px;padding:3px 0;color:rgba(255,255,255,.45)}
   .sidebar-sources .spill.live{color:var(--lime)}
   .sidebar-sources .spill.soon{color:var(--amber)}
+  .sidebar-sources .crm-btn{display:block;width:100%;text-align:left;margin-bottom:6px;font-family:'IBM Plex Mono';font-size:10.5px;font-weight:600;color:rgba(255,255,255,.55);background:none;border:1px solid rgba(255,255,255,.12);border-radius:6px;padding:7px 10px;cursor:pointer;transition:all .15s}
+  .sidebar-sources .crm-btn:hover{color:#fff;border-color:rgba(255,255,255,.4)}
+  .sidebar-sources .crm-btn.connected{color:var(--lime);border-color:rgba(80,200,120,.35)}
   .main-content{flex:1;min-width:0;overflow-y:auto}
   .main-wrap{max-width:1100px;margin:0 auto;padding:0 24px}
   .section{display:none;padding-bottom:24px}
@@ -242,8 +245,6 @@
       <option value="q4">Q4 · oct–dic 2026</option>
     </select>
     <span class="period mono" id="periodLabel">Q3 2026 · actualizado 19 oct · MXN</span>
-    <button class="crm-btn" id="crmBtn" onclick="document.getElementById('crmOverlay').classList.add('open')">CRM</button>
-    <button class="crm-btn" id="metaBtn" onclick="document.getElementById('metaOverlay').classList.add('open')">Meta Ads</button>
   </div>
 </div></header>
 
@@ -301,12 +302,20 @@
       </div>
     </nav>
     <div class="sidebar-sources">
-      <div class="stitle">Fuentes de datos</div>
+      <div class="stitle">Conexiones</div>
+      <button class="crm-btn" id="crmBtn" onclick="document.getElementById('crmOverlay').classList.add('open')">CRM</button>
+      <button class="crm-btn" id="metaBtn" onclick="document.getElementById('metaOverlay').classList.add('open')">Meta Ads</button>
+      <div class="stitle" style="margin-top:14px">Fuentes de datos</div>
       <span class="spill live">● Meta Ads</span>
       <span class="spill live">● Google Ads</span>
       <span class="spill live">● Twenty CRM</span>
       <span class="spill soon">○ Brevo</span>
       <span class="spill soon">○ Respond.io</span>
+    </div>
+    <div class="sidebar-sources" id="updateInfo">
+      <div class="stitle">Última actualización</div>
+      <span class="spill" id="updateDate"></span>
+      <span class="spill" id="updateBy"></span>
     </div>
   </aside>
 
@@ -502,6 +511,21 @@
 </div>
 
 <script>
+// ═══════════════════════════════════════════════════════════════════
+// DASHBOARD META — update this on every publish
+// ═══════════════════════════════════════════════════════════════════
+const DASH_UPDATE={date:'2026-10-21T05:45:00Z',by:'Luz'};
+
+function renderUpdateInfo(){
+  const d=new Date(DASH_UPDATE.date);
+  const pad=n=>String(n).padStart(2,'0');
+  const dateStr=`${pad(d.getUTCDate())}/${pad(d.getUTCMonth()+1)}/${d.getUTCFullYear()} ${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())} GMT`;
+  const el=document.getElementById('updateDate');
+  const byEl=document.getElementById('updateBy');
+  if(el)el.textContent=dateStr;
+  if(byEl)byEl.textContent='por '+DASH_UPDATE.by;
+}
+
 // ═══════════════════════════════════════════════════════════════════
 // TWENTY CRM — live data module
 // ═══════════════════════════════════════════════════════════════════
@@ -1388,6 +1412,7 @@ function setPlatform(btn,plat){
 // ═══════════════════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════════════════
+renderUpdateInfo();
 initCRM();
 initMeta();
 renderAll('q3');
