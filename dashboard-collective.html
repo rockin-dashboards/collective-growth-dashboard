@@ -1,0 +1,1396 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>rockin. · Collective Academy — Dashboard de Growth</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root{--ink:#141519;--ink-soft:#2B2D34;--paper:#F1F2F4;--surface:#FFFFFF;
+    --magenta:#FF2D6B;--magenta-dim:rgba(255,45,107,.12);--violet:#6C4BF5;--violet-dim:rgba(108,75,245,.12);
+    --lime:#12B981;--lime-dim:rgba(18,185,129,.13);--amber:#F5A524;--amber-dim:rgba(245,165,36,.12);--blue:#3552C4;--blue-dim:rgba(53,82,196,.12);
+    --muted:#6B7280;--line:#E4E5E9;--line-soft:#EDEEF1;--danger:#E5484D;--danger-dim:rgba(229,72,77,.12);
+    --cat-1:#2a78d6;--cat-2:#eb6834;--cat-3:#1baf7a;--cat-4:#eda100;--cat-5:#e87ba4;--cat-6:#6250d6}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:'Inter',system-ui,sans-serif;background:var(--paper);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased}
+  .mono{font-family:'IBM Plex Mono',monospace}
+
+  /* ── Header ── */
+  header.bar{position:sticky;top:0;z-index:60;background:rgba(20,21,25,.96);backdrop-filter:blur(8px);color:#fff;border-bottom:1px solid rgba(255,255,255,.08)}
+  .bar-inner{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;margin:0 auto;gap:12px;flex-wrap:wrap}
+  .bar-r{display:flex;align-items:center;gap:10px;flex-wrap:nowrap;flex-shrink:0}
+  .brand{display:flex;align-items:baseline;gap:14px}
+  .logo{font-family:'Bricolage Grotesque';font-weight:800;font-size:26px;letter-spacing:-.03em}
+  .logo .dot{color:var(--magenta)}
+  .brand .sep{width:1px;height:22px;background:rgba(255,255,255,.2)}
+  .client{font-size:13px;color:rgba(255,255,255,.72);font-weight:500}
+  .client b{color:#fff;font-weight:600}
+  .period{font-family:'IBM Plex Mono';font-size:12px;color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.18);padding:6px 12px;border-radius:999px}
+
+  /* ── Intro ── */
+  .intro{padding:28px 0 20px}
+  .eyebrow{font-family:'IBM Plex Mono';font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--magenta);font-weight:600}
+  .intro h1{font-family:'Bricolage Grotesque';font-weight:800;font-size:clamp(22px,3vw,32px);line-height:1.1;letter-spacing:-.03em;margin:10px 0 6px;max-width:24ch}
+  .intro p.sub{color:var(--muted);font-size:13.5px;max-width:64ch}
+
+  /* ── Quarter selector ── */
+  select.sel{font-family:'Inter';font-size:13px;font-weight:600;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:9px 34px 9px 13px;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23141519' stroke-width='3'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+  select.sel:hover{border-color:var(--ink)}
+  select.sel.dark{font-size:12px;font-weight:600;color:#fff;background-color:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);padding:7px 32px 7px 12px;border-radius:10px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;-webkit-appearance:none;appearance:none}
+  select.sel.dark:hover{border-color:rgba(255,255,255,.45)}
+  select.sel.dark option{color:#141519;background:#fff}
+
+  /* ── Layout: Sidebar + Main ── */
+  .layout{display:flex;min-height:calc(100vh - 53px)}
+  .sidebar{width:240px;background:var(--ink);color:#fff;position:sticky;top:53px;height:calc(100vh - 53px);overflow-y:auto;flex-shrink:0;display:flex;flex-direction:column;border-right:1px solid rgba(255,255,255,.08)}
+  .sidebar-brand{padding:22px 18px 16px;border-bottom:1px solid rgba(255,255,255,.08)}
+  .sidebar-brand .logo{font-family:'Bricolage Grotesque';font-weight:800;font-size:22px;letter-spacing:-.03em}
+  .sidebar-brand .logo .dot{color:var(--magenta)}
+  .sidebar-brand .client{font-size:11.5px;color:rgba(255,255,255,.5);margin-top:4px}
+  .sidebar-nav{flex:1;padding:12px 0}
+  .nav-item{display:flex;align-items:center;gap:12px;padding:12px 18px;cursor:pointer;color:rgba(255,255,255,.55);font-size:13px;font-weight:500;transition:all .15s;border-left:3px solid transparent;user-select:none}
+  .nav-item:hover{color:rgba(255,255,255,.85);background:rgba(255,255,255,.04)}
+  .nav-item.active{color:#fff;background:rgba(255,255,255,.08);border-left-color:var(--magenta)}
+  .nav-item .idx{font-family:'IBM Plex Mono';font-size:11px;font-weight:600;color:var(--magenta);width:22px;flex-shrink:0}
+  .nav-item .ntxt{flex:1}
+  .nav-item .ntitle{font-weight:600;font-size:13.5px}
+  .nav-item .nsub{font-size:10.5px;color:rgba(255,255,255,.4);margin-top:2px}
+  .sidebar-sources{padding:16px 18px;border-top:1px solid rgba(255,255,255,.08)}
+  .sidebar-sources .stitle{font-family:'IBM Plex Mono';font-size:9.5px;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.35);margin-bottom:8px}
+  .sidebar-sources .spill{display:block;font-size:10.5px;padding:3px 0;color:rgba(255,255,255,.45)}
+  .sidebar-sources .spill.live{color:var(--lime)}
+  .sidebar-sources .spill.soon{color:var(--amber)}
+  .main-content{flex:1;min-width:0;overflow-y:auto}
+  .main-wrap{max-width:1100px;margin:0 auto;padding:0 24px}
+  .section{display:none;padding-bottom:24px}
+  .section.active{display:block}
+  .sec-head{margin-bottom:18px}
+  .sec-head h2{font-family:'Bricolage Grotesque';font-weight:700;font-size:22px;letter-spacing:-.02em}
+  .sec-head .sec-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+
+  /* ── KPI cards ── */
+  .krow{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:16px}
+  .kc{background:#FBFBFC;border:1px solid var(--line);border-radius:12px;padding:13px 15px;position:relative;overflow:hidden}
+  .kc .kl{font-size:10.5px;color:var(--muted);font-weight:500;line-height:1.25;min-height:26px}
+  .kc .kv{font-family:'IBM Plex Mono';font-weight:600;font-size:20px;letter-spacing:-.03em;margin-top:4px;line-height:1}
+  .kc .kf{font-size:9.5px;color:var(--muted);margin-top:5px;line-height:1.3}
+  .kc.hero{background:var(--magenta-dim);border-color:transparent}
+  .kc.hero .kv{color:var(--magenta);font-size:26px}
+  .kc.mc{background:var(--violet-dim);border-color:transparent}
+  .kc.mc .kv{color:var(--violet);font-size:26px}
+  .kc.good{background:var(--lime-dim);border-color:transparent}
+  .kc.good .kv{color:#0A7F58}
+  .kc.warn{background:var(--amber-dim);border-color:transparent}
+  .kc.warn .kv{color:#B4740A}
+  .kc.bad{background:var(--danger-dim);border-color:transparent}
+  .kc.bad .kv{color:var(--danger)}
+
+  /* ── Cards, grids ── */
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px}
+  .card h3{font-size:14px;font-weight:600;margin-bottom:2px}
+  .card .cardsub{font-size:12px;color:var(--muted);margin-bottom:14px}
+  .chart-box{position:relative;height:300px}
+  .chart-box.sm{height:260px}
+
+  /* ── Progress bars ── */
+  .pbar-wrap{margin-bottom:8px}
+  .pbar-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
+  .pbar-name{font-size:12.5px;font-weight:500;max-width:60%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .pbar-vals{font-family:'IBM Plex Mono';font-size:11px;color:var(--muted)}
+  .pbar-vals b{color:var(--ink)}
+  .pbar-track{height:20px;background:#F0F0F2;border-radius:6px;overflow:hidden;position:relative}
+  .pbar-fill{height:100%;border-radius:6px;transition:width .4s}
+  .pbar-pct{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-family:'IBM Plex Mono';font-size:10px;font-weight:600;color:var(--ink)}
+
+  /* ── Tables ── */
+  .tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+  table{width:100%;border-collapse:collapse;font-size:13px;min-width:700px}
+  th,td{padding:10px 12px;text-align:right;white-space:nowrap}
+  th:first-child,td:first-child{text-align:left}
+  thead th{font-family:'IBM Plex Mono';font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600;border-bottom:1px solid var(--line);background:#FBFBFC}
+  tbody td{border-bottom:1px solid var(--line-soft)}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:hover{background:#FBFAFB}
+  td.name{font-weight:500;max-width:230px;white-space:normal}
+  .tag{font-family:'IBM Plex Mono';font-size:10px;font-weight:600;padding:2px 7px;border-radius:6px;text-transform:uppercase;letter-spacing:.02em}
+  .tag.paid{background:var(--magenta-dim);color:var(--magenta)}
+  .tag.organic{background:var(--lime-dim);color:#0A7F58}
+  .tag.active{background:var(--lime-dim);color:#0A7F58}
+  .tag.paused{background:#EEEEF1;color:#75777E}
+
+  /* ── Company cards ── */
+  .co-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px}
+  .co-card{border:1px solid var(--line);border-left:4px solid #0A7F58;border-radius:10px;padding:12px 14px;background:var(--surface)}
+  .co-card .co-name{font-weight:700;font-size:14px}
+  .co-card .co-desc{font-size:11.5px;color:var(--muted);margin:4px 0 9px;line-height:1.45}
+  .co-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+  .co-tag{font-size:10.5px;background:rgba(107,114,128,.12);color:var(--ink-soft);padding:3px 9px;border-radius:20px}
+  .co-tag.ch{background:#1877F21f;color:#1877F2;font-weight:600}
+
+  /* ── Insights ── */
+  .insights{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
+  .ins{background:#FBFBFC;border:1px solid var(--line);border-radius:14px;padding:17px;border-left:3px solid var(--magenta)}
+  .ins.good{border-left-color:var(--lime)}
+  .ins.watch{border-left-color:var(--amber)}
+  .ins.bad{border-left-color:var(--danger)}
+  .ins .k{font-family:'IBM Plex Mono';font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:7px}
+  .ins h4{font-size:14.5px;font-weight:600;margin-bottom:5px}
+  .ins p{font-size:12.5px;color:var(--ink-soft);line-height:1.55}
+  .ins p b{color:var(--ink)}
+
+  /* ── Note/callout ── */
+  .note{border-radius:14px;padding:15px 18px;font-size:12.5px;margin-top:16px;display:flex;gap:12px;align-items:flex-start}
+  .note.info{background:#EFF6FF;border:1px solid #BFDBFE;color:#1E40AF}
+  .note.info b{color:#1E3A8A}
+  .note.warn{background:#FFF7E6;border:1px solid #F5DFA6;color:#8A6516}
+  .note.warn b{color:#6B4E12}
+
+  /* ── Tabs ── */
+  .tabs{display:flex;gap:4px;margin:8px 0 18px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+  .tab{font-family:'Inter';font-size:13.5px;font-weight:600;padding:11px 16px;border:none;background:none;color:var(--muted);cursor:pointer;position:relative;border-radius:8px 8px 0 0}
+  .tab:hover{color:var(--ink)}
+  .tab.active{color:var(--ink)}
+  .tab.active::after{content:"";position:absolute;left:12px;right:12px;bottom:-1px;height:2.5px;background:var(--magenta);border-radius:2px}
+  .panel{display:none}
+  .panel.active{display:block}
+
+  /* ── Funnel ── */
+  .fnl{display:flex;flex-direction:column;gap:0}
+  .fnl-stage{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-radius:10px;color:#fff}
+  .fnl-stage .fl{font-size:12px;font-weight:600;opacity:.9}
+  .fnl-stage .fv{font-family:'IBM Plex Mono';font-weight:600;font-size:19px}
+  .fnl-gap{display:flex;align-items:center;gap:8px;padding:5px 16px;font-size:11px;color:var(--muted)}
+  .fnl-gap .rate{font-family:'IBM Plex Mono';font-weight:600;color:var(--ink)}
+
+  /* ── Source buttons ── */
+  .srcbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+  .srcbtn{font-family:inherit;font-size:13px;font-weight:600;color:var(--ink-soft);background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:8px 14px;cursor:pointer;transition:all .15s}
+  .srcbtn:hover{border-color:var(--ink)}
+  .srcbtn.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .ctrl-l{font-family:'IBM Plex Mono';font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+
+  /* ── Discount code legend ── */
+  .code-legend{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+  .code-pill{font-family:'IBM Plex Mono';font-size:10.5px;padding:4px 10px;border-radius:8px;background:var(--magenta-dim);color:var(--magenta);font-weight:600}
+  .code-pill .off{color:var(--ink-soft);font-weight:400;margin-left:4px}
+
+  footer{padding:36px 0 60px;color:var(--muted);font-size:12px;text-align:center;margin-top:8px}
+  footer .logo-sm{font-family:'Bricolage Grotesque';font-weight:800;color:var(--ink)}
+  footer .logo-sm .dot{color:var(--magenta)}
+
+  /* ── CRM config panel ── */
+  .crm-btn{font-family:'IBM Plex Mono';font-size:10.5px;font-weight:600;color:rgba(255,255,255,.6);background:none;border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:5px 10px;cursor:pointer;transition:all .15s}
+  .crm-btn:hover{color:#fff;border-color:rgba(255,255,255,.45)}
+  .crm-btn.connected{color:var(--lime);border-color:var(--lime)}
+  .crm-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;place-items:center}
+  .crm-overlay.open{display:grid}
+  .crm-modal{background:var(--surface);border-radius:16px;padding:28px 28px 24px;width:min(520px,92vw);box-shadow:0 20px 60px rgba(0,0,0,.25)}
+  .crm-modal h3{font-family:'Bricolage Grotesque';font-weight:800;font-size:18px;margin-bottom:4px}
+  .crm-modal .sub{color:var(--muted);font-size:13px;margin-bottom:16px}
+  .crm-modal label{font-family:'IBM Plex Mono';font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);display:block;margin-bottom:6px}
+  .crm-modal input[type=text]{width:100%;font-family:'IBM Plex Mono';font-size:12px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink)}
+  .crm-modal input[type=text]:focus{outline:none;border-color:var(--violet)}
+  .crm-modal .btn-row{display:flex;gap:8px;margin-top:18px;justify-content:flex-end}
+  .crm-modal .mbtn{font-family:'Inter';font-size:13px;font-weight:600;padding:9px 18px;border-radius:10px;border:none;cursor:pointer}
+  .crm-modal .mbtn.primary{background:var(--violet);color:#fff}
+  .crm-modal .mbtn.primary:hover{background:#5a3de0}
+  .crm-modal .mbtn.ghost{background:none;color:var(--muted);border:1px solid var(--line)}
+  .crm-modal .mbtn.danger{background:none;color:var(--danger);border:1px solid var(--danger)}
+  .crm-status{margin-top:14px;padding:12px;border-radius:10px;font-size:12px;font-family:'IBM Plex Mono'}
+  .crm-status.ok{background:var(--lime-dim);color:#0a7f58}
+  .crm-status.err{background:var(--danger-dim);color:var(--danger)}
+  .crm-status.loading{background:var(--violet-dim);color:var(--violet)}
+  .live-badge{display:inline-flex;align-items:center;gap:4px;font-family:'IBM Plex Mono';font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;padding:3px 8px;border-radius:6px;background:var(--lime-dim);color:#0a7f58;margin-left:6px;vertical-align:middle}
+  .live-badge::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--lime);animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+  @media(max-width:900px){
+    .layout{flex-direction:column}
+    .sidebar{width:100%;position:relative;top:0;height:auto;flex-direction:row;overflow-x:auto;overflow-y:hidden;border-right:none;border-bottom:1px solid rgba(255,255,255,.08)}
+    .sidebar-brand{display:none}
+    .sidebar-nav{display:flex;padding:0;gap:0;flex-shrink:0}
+    .nav-item{border-left:none;border-bottom:3px solid transparent;padding:10px 16px;white-space:nowrap}
+    .nav-item.active{border-bottom-color:var(--magenta);border-left-color:transparent}
+    .nav-item .nsub{display:none}
+    .sidebar-sources{display:none}
+    .grid-2,.insights{grid-template-columns:1fr}
+  }
+  @media(max-width:640px){.brand .client{display:none}.period{display:none}}
+  @media(max-width:560px){.krow{grid-template-columns:repeat(2,1fr)}}
+  @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto;animation:none!important}}
+</style>
+</head>
+<body>
+
+<header class="bar"><div class="bar-inner">
+  <div class="brand">
+    <span class="logo">rockin<span class="dot">.</span></span>
+    <span class="sep"></span>
+    <span class="client">Cliente — <b>Collective Academy</b></span>
+  </div>
+  <div class="bar-r">
+    <select class="sel dark" id="quarterSel">
+      <option value="all">Todo 2026</option>
+      <option value="q1">Q1 · ene–mar 2026</option>
+      <option value="q2">Q2 · abr–jun 2026</option>
+      <option value="q3" selected>Q3 · jul–sep 2026</option>
+      <option value="q4">Q4 · oct–dic 2026</option>
+    </select>
+    <span class="period mono" id="periodLabel">Q3 2026 · actualizado 19 oct · MXN</span>
+    <button class="crm-btn" id="crmBtn" onclick="document.getElementById('crmOverlay').classList.add('open')">CRM</button>
+    <button class="crm-btn" id="metaBtn" onclick="document.getElementById('metaOverlay').classList.add('open')">Meta Ads</button>
+  </div>
+</div></header>
+
+<!-- CRM Config Modal -->
+<div class="crm-overlay" id="crmOverlay">
+  <div class="crm-modal">
+    <h3>Conectar Twenty CRM</h3>
+    <div class="sub">Ingresa tu API Key de Twenty para jalar datos en vivo. Se guarda únicamente en tu navegador (localStorage).</div>
+    <label>API Key (JWT Token)</label>
+    <input type="text" id="crmKeyInput" placeholder="eyJhbGciOiJFUzI1NiIs…" autocomplete="off" spellcheck="false">
+    <div id="crmStatus"></div>
+    <div class="btn-row">
+      <button class="mbtn danger" id="crmDisconnect" style="display:none" onclick="disconnectCRM()">Desconectar</button>
+      <button class="mbtn ghost" onclick="document.getElementById('crmOverlay').classList.remove('open')">Cancelar</button>
+      <button class="mbtn primary" id="crmConnect" onclick="connectCRM()">Conectar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Meta Ads Config Modal -->
+<div class="crm-overlay" id="metaOverlay">
+  <div class="crm-modal">
+    <h3>Conectar Meta Ads</h3>
+    <div class="sub">Ingresa tu Access Token de Meta para jalar campañas en vivo. Se guarda únicamente en tu navegador (localStorage). Cuenta: <b>10100128746698390</b></div>
+    <label>Access Token</label>
+    <input type="text" id="metaKeyInput" placeholder="EAAebiaKK4EgBS0yQOw…" autocomplete="off" spellcheck="false">
+    <div id="metaStatus"></div>
+    <div class="btn-row">
+      <button class="mbtn danger" id="metaDisconnect" style="display:none" onclick="disconnectMeta()">Desconectar</button>
+      <button class="mbtn ghost" onclick="document.getElementById('metaOverlay').classList.remove('open')">Cancelar</button>
+      <button class="mbtn primary" id="metaConnect" onclick="connectMeta()">Conectar</button>
+    </div>
+  </div>
+</div>
+
+<div class="layout">
+  <!-- ══ SIDEBAR ══ -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="logo">rockin<span class="dot">.</span></div>
+      <div class="client">Collective Academy</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-item active" data-sec="sec1">
+        <span class="idx">01</span>
+        <div class="ntxt"><div class="ntitle">Masterclasses</div><div class="nsub">Lead Magnet · Registros</div></div>
+      </div>
+      <div class="nav-item" data-sec="sec2">
+        <span class="idx">02</span>
+        <div class="ntxt"><div class="ntitle">Cursos y Bootcamps</div><div class="nsub">Ventas · Paid vs Orgánico</div></div>
+      </div>
+      <div class="nav-item" data-sec="sec3">
+        <span class="idx">03</span>
+        <div class="ntxt"><div class="ntitle">Campañas</div><div class="nsub">Meta + Google Ads</div></div>
+      </div>
+    </nav>
+    <div class="sidebar-sources">
+      <div class="stitle">Fuentes de datos</div>
+      <span class="spill live">● Meta Ads</span>
+      <span class="spill live">● Google Ads</span>
+      <span class="spill live">● Twenty CRM</span>
+      <span class="spill soon">○ Brevo</span>
+      <span class="spill soon">○ Respond.io</span>
+    </div>
+  </aside>
+
+  <!-- ══ MAIN CONTENT ══ -->
+  <main class="main-content">
+  <div class="main-wrap">
+  <div class="intro">
+    <span class="eyebrow">Growth Dashboard · Performance + Automation</span>
+    <h1>Collective Academy: demanda que convierte.</h1>
+    <p class="sub">Masterclasses como lead magnet, cursos y bootcamps como producto. Embudo completo: registro gratuito → lead calificado → venta. Paid vs orgánico por código de descuento.</p>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- SECTION 01 · MASTERCLASSES                                    -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <div class="section active" id="sec1">
+    <div class="sec-head">
+      <h2>Masterclasses · Lead Magnet</h2>
+      <p class="sec-sub">Registros gratuitos → base de datos → oportunidad B2B · Meta de registros: 180 por masterclass</p>
+    </div>
+
+      <div class="krow" id="mcKpis"></div>
+
+      <div class="card" style="margin-bottom:16px">
+        <h3>Registros vs meta por masterclass <span style="font-weight:400;color:var(--muted);font-size:12px">— meta: 180 registros</span></h3>
+        <div class="cardsub">Barra llena = meta cumplida. Cada masterclass tiene meta de <b>180 registros</b>.</div>
+        <div id="mcProgress"></div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3>Cargos de quienes se registran</h3>
+          <div class="cardsub">Roles declarados por los asistentes a las masterclasses</div>
+          <div class="chart-box sm"><canvas id="mcRolesChart"></canvas></div>
+        </div>
+        <div class="card">
+          <h3>Fuente de registro</h3>
+          <div class="cardsub">Canal por el cual llegó cada registrante</div>
+          <div class="chart-box sm"><canvas id="mcSourceChart"></canvas></div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:16px">
+        <h3>Empresas que llegaron por la masterclass <span style="font-weight:400;color:var(--muted);font-size:12px">— web scraping de dominios de correo</span></h3>
+        <div class="cardsub">Empresas relevantes identificadas a partir del dominio del correo de registro. Las cifras de empleados/ingresos son aproximadas y deben verificarse.</div>
+        <div class="co-grid" id="mcCompanies"></div>
+      </div>
+
+      <div class="insights" id="mcInsights"></div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- SECTION 02 · CURSOS Y BOOTCAMPS                               -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <div class="section" id="sec2">
+    <div class="sec-head">
+      <h2>Cursos y Bootcamps · Ventas</h2>
+      <p class="sec-sub">Paid vs orgánico · meta base: 15 ventas por curso/bootcamp · atribución por código de descuento</p>
+    </div>
+
+      <div class="srcbar">
+        <span class="ctrl-l" style="font-weight:600">Vista</span>
+        <button class="srcbtn active" data-view="all" onclick="setView(this,'all')">Todo</button>
+        <button class="srcbtn" data-view="paid" onclick="setView(this,'paid')">Paid</button>
+        <button class="srcbtn" data-view="organic" onclick="setView(this,'organic')">Orgánico</button>
+      </div>
+
+      <div class="note info" style="margin-top:0;margin-bottom:16px">
+        <span>&#9873;</span>
+        <div><b>Atribución paid vs orgánico:</b> las ventas con estos códigos de descuento se atribuyen a <b>paid</b> (pauta + email masivo). El resto se considera orgánico.
+          <div class="code-legend">
+            <span class="code-pill">SKILLS30M <span class="off">30% off</span></span>
+            <span class="code-pill">EARLYQ4 <span class="off">20% off</span></span>
+            <span class="code-pill">CELEBRATE26L <span class="off">50% off</span></span>
+            <span class="code-pill">ANIVERSARIO26MC <span class="off">35% off</span></span>
+            <span class="code-pill">ANIVERSARIO26M <span class="off">50% off</span></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="krow" id="cursosKpis"></div>
+
+      <div class="card" style="margin-bottom:16px">
+        <h3>Ventas vs meta por curso/bootcamp <span style="font-weight:400;color:var(--muted);font-size:12px">— meta base: 15 ventas</span></h3>
+        <div class="cardsub">Barra llena = meta cumplida. Se muestra paid (color sólido) vs orgánico (rayado).</div>
+        <div id="cursosProgress"></div>
+      </div>
+
+      <div class="card" style="margin-bottom:16px">
+        <h3>Costo por adquisición (CPA) por curso <span style="font-weight:400;color:var(--muted);font-size:12px">— inversión de pauta ÷ ventas paid</span></h3>
+        <div class="cardsub">Solo ventas atribuidas a paid. <b>CPA más bajo = más eficiente.</b></div>
+        <div class="tbl-wrap" style="border:none">
+          <table id="cpaTable">
+            <thead><tr><th>Curso / Bootcamp</th><th>Inversión</th><th>Ventas paid</th><th>Ventas orgánicas</th><th>CPA paid</th><th>Ingreso total</th><th>ROAS</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3>Ingresos por curso</h3>
+          <div class="cardsub">Paid (sólido) vs orgánico (trama) en MXN</div>
+          <div class="chart-box sm"><canvas id="revenueChart"></canvas></div>
+        </div>
+        <div class="card">
+          <h3>Embudo: registro → formulario → venta</h3>
+          <div class="cardsub">Conversión en cada etapa del pipeline</div>
+          <div class="fnl" id="cursosFunnel"></div>
+        </div>
+      </div>
+
+      <div class="insights" id="cursosInsights"></div>
+
+      <div class="card" id="liveOppCard" style="display:none;border:1px solid var(--violet-dim);margin-top:16px">
+        <h3 style="color:var(--violet)">Pipeline B2B · Twenty CRM <span class="live-badge">LIVE</span></h3>
+        <div class="cardsub">Oportunidades de venta B2B directo del CRM en tiempo real</div>
+        <div id="liveOppPanel"></div>
+      </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- SECTION 03 · CAMPAÑAS (META + GOOGLE)                         -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <div class="section" id="sec3">
+    <div class="sec-head">
+      <h2>Campañas · Meta + Google Ads</h2>
+      <p class="sec-sub">Inversión, atractividad, desgaste, creativos y conversiones por plataforma</p>
+    </div>
+
+      <div class="srcbar">
+        <span class="ctrl-l" style="font-weight:600">Plataforma</span>
+        <button class="srcbtn active" data-plat="meta" onclick="setPlatform(this,'meta')">Meta Ads</button>
+        <button class="srcbtn" data-plat="google" onclick="setPlatform(this,'google')">Google Ads</button>
+      </div>
+
+      <!-- META -->
+      <div id="plat-meta">
+        <div class="krow" id="metaKpis"></div>
+        <div class="card" style="margin-bottom:16px">
+          <h3>Campañas — Meta Ads <span class="live-badge" id="metaLiveBadge" style="display:none">LIVE</span></h3>
+          <div class="cardsub">Cuenta: <b>10100128746698390</b> · Collective Account · inversión, alcance, conversiones</div>
+          <div class="tbl-wrap" style="border:none">
+            <table id="metaCampTable">
+              <thead><tr><th>Campaña</th><th>Objetivo</th><th>Estado</th><th>Inversión</th><th>Impr.</th><th>Alcance</th><th>CTR</th><th>CPC</th><th>Conversiones</th><th>Tipo</th><th>CPA</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <h3>CTR por campaña</h3>
+            <div class="cardsub">Atractividad de cada campaña activa</div>
+            <div class="chart-box sm"><canvas id="metaCtrChart"></canvas></div>
+          </div>
+          <div class="card">
+            <h3>Inversión por objetivo</h3>
+            <div class="cardsub">Distribución del gasto por tipo de campaña</div>
+            <div class="chart-box sm"><canvas id="metaSpendChart"></canvas></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GOOGLE -->
+      <div id="plat-google" style="display:none">
+        <div class="krow" id="googleKpis"></div>
+        <div class="card" style="margin-bottom:16px">
+          <h3>Campañas — Google Ads</h3>
+          <div class="cardsub">Cuenta: <b>715-055-6785</b> · búsqueda (SEA)</div>
+          <div class="tbl-wrap" style="border:none">
+            <table id="googleCampTable">
+              <thead><tr><th>Campaña</th><th>Estado</th><th>Impr.</th><th>Clics</th><th>CTR</th><th>Costo</th><th>CPC</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Top términos de búsqueda</h3>
+          <div class="cardsub">Términos con más clics y mejor CTR</div>
+          <div class="chart-box"><canvas id="googleKwChart"></canvas></div>
+        </div>
+      </div>
+
+      <div class="insights" id="campInsights"></div>
+  </div>
+
+  <footer>
+    <div><span class="logo-sm">rockin<span class="dot">.</span></span> · growth team</div>
+    <div style="margin-top:6px">Fuentes: Meta Ads API · Google Ads API · Google Sheets · Twenty CRM (conectada) · MXN · Q3 2026</div>
+  </footer>
+  </div>
+  </main>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════
+// TWENTY CRM — live data module
+// ═══════════════════════════════════════════════════════════════════
+const TWENTY_BASE='https://api.twenty.com';
+let crmKey=null;
+let crmLive=false;
+
+function getCrmKey(){
+  try{return localStorage.getItem('twenty_api_key')||null}catch(e){return null}
+}
+function setCrmKey(k){
+  try{localStorage.setItem('twenty_api_key',k)}catch(e){}
+}
+function clearCrmKey(){
+  try{localStorage.removeItem('twenty_api_key')}catch(e){}
+}
+
+async function twentyFetch(path){
+  if(!crmKey)throw new Error('No API key');
+  const r=await fetch(TWENTY_BASE+path,{headers:{'Authorization':'Bearer '+crmKey}});
+  if(!r.ok)throw new Error(r.status+' '+r.statusText);
+  return r.json();
+}
+
+function quarterRange(q){
+  const yr=2026;
+  const ranges={q1:['01-01','03-31'],q2:['04-01','06-30'],q3:['07-01','09-30'],q4:['10-01','12-31']};
+  const r=ranges[q];
+  if(!r)return null;
+  return {gte:yr+'-'+r[0]+'T00:00:00Z',lte:yr+'-'+r[1]+'T23:59:59Z'};
+}
+
+async function fetchMarketingEvents(){
+  const d=await twentyFetch('/rest/marketingEventss?limit=50');
+  return d.data?.marketingEventss||[];
+}
+
+async function fetchEventParticipations(limit){
+  const d=await twentyFetch('/rest/eventParticipations?limit='+(limit||200));
+  return {items:d.data?.eventParticipations||[],total:d.totalCount||0};
+}
+
+async function fetchPeople(limit){
+  const d=await twentyFetch('/rest/people?limit='+(limit||100)+'&order_by=createdAt%5BDescNullsLast%5D');
+  return {items:d.data?.people||[],total:d.totalCount||0};
+}
+
+async function fetchCompanies(limit){
+  const d=await twentyFetch('/rest/companies?limit='+(limit||100));
+  return {items:d.data?.companies||[],total:d.totalCount||0};
+}
+
+async function fetchOpportunities(limit){
+  const d=await twentyFetch('/rest/opportunities?limit='+(limit||100));
+  return {items:d.data?.opportunities||[],total:d.totalCount||0};
+}
+
+async function fetchCourses(){
+  const d=await twentyFetch('/rest/courses?limit=50');
+  return d.data?.courses||[];
+}
+
+async function fetchCampaigns(){
+  const d=await twentyFetch('/rest/messageCampaigns?limit=50');
+  return {items:d.data?.messageCampaigns||[],total:d.totalCount||0};
+}
+
+function microsToCurrency(amt){
+  if(!amt||!amt.amountMicros)return 0;
+  return amt.amountMicros/1000000;
+}
+
+function filterByQuarter(items,dateField,q){
+  const range=quarterRange(q);
+  if(!range)return items;
+  return items.filter(i=>{
+    const d=i[dateField];
+    if(!d)return false;
+    return d>=range.gte&&d<=range.lte;
+  });
+}
+
+async function loadLiveMasterclassData(q){
+  const [events,partData,peopleData,compData]=await Promise.all([
+    fetchMarketingEvents(),
+    fetchEventParticipations(500),
+    fetchPeople(200),
+    fetchCompanies(200)
+  ]);
+
+  const qRange=quarterRange(q);
+  const qEvents=events.filter(e=>{
+    if(!e.startAt)return false;
+    if(!qRange)return true;
+    return e.startAt>=qRange.gte&&e.startAt<=qRange.lte;
+  });
+
+  const participations=partData.items;
+  const masterclasses=qEvents.map(ev=>{
+    const evParts=participations.filter(p=>p.eventCustomId===ev.id);
+    const registros=evParts.length;
+    const metaRegs=evParts.filter(p=>(p.utmSource||'').toLowerCase().includes('meta')||(p.utmSource||'').toLowerCase().includes('facebook')||(p.source||'').toLowerCase().includes('meta')).length;
+    const linkedinRegs=evParts.filter(p=>(p.utmSource||'').toLowerCase().includes('linkedin')||(p.source||'').toLowerCase().includes('linkedin')).length;
+    const orgRegs=registros-metaRegs-linkedinRegs;
+
+    const roles={};
+    evParts.forEach(p=>{
+      const personMatch=peopleData.items.find(pe=>pe.id===p.personId);
+      const role=personMatch?.jobTitle||'Otro';
+      const bucket=role.length>25?role.substring(0,22)+'…':role;
+      roles[bucket]=(roles[bucket]||0)+1;
+    });
+
+    return {
+      name:ev.name||'Sin nombre',
+      registros,meta:180,
+      cpRegMeta:0,cpRegGoogle:0,
+      invMeta:0,invGoogle:0,invLinkedin:0,
+      metaRegs,linkedinRegs,
+      roles:Object.keys(roles).length?roles:{"Sin datos de roles":registros||1}
+    };
+  });
+
+  const companies=[];
+  const seenCompanies=new Set();
+  peopleData.items.forEach(p=>{
+    const cid=p.companyId;
+    if(cid&&!seenCompanies.has(cid)){
+      const comp=compData.items.find(c=>c.id===cid);
+      if(comp){
+        seenCompanies.add(cid);
+        const empTotal=comp.employeesTotal?'~'+Number(comp.employeesTotal).toLocaleString('es-MX'):'—';
+        companies.push({
+          name:comp.name||'Sin nombre',
+          desc:comp.descriptionText||comp.industry||'—',
+          emp:empTotal,
+          rev:comp.revenueCollective12M?'MXN '+microsToCurrency(comp.revenueCollective12M).toLocaleString('es-MX'):'—',
+          rol:p.jobTitle||'—',
+          ch:p.originalSource||p.latestSource||'CRM'
+        });
+      }
+    }
+  });
+
+  return {
+    masterclasses,
+    totalInv:0,
+    empresas:companies.slice(0,12),
+    _live:true,
+    _peopleCt:peopleData.total,
+    _companyCt:compData.total,
+    _eventCt:events.length,
+    _partCt:partData.total
+  };
+}
+
+async function loadLiveOpportunityData(q){
+  const opps=await fetchOpportunities(100);
+  const qRange=quarterRange(q);
+  const filtered=opps.items.filter(o=>{
+    if(!o.closeDate)return false;
+    if(!qRange)return true;
+    return o.closeDate>=qRange.gte&&o.closeDate<=qRange.lte;
+  });
+
+  const won=filtered.filter(o=>o.stage==='WON');
+  const active=filtered.filter(o=>o.stage==='ACTIVE');
+  const lost=filtered.filter(o=>o.stage==='LOST');
+
+  return {
+    total:opps.total,
+    inQuarter:filtered.length,
+    won:{count:won.length,amount:won.reduce((s,o)=>s+microsToCurrency(o.amount),0)},
+    active:{count:active.length,amount:active.reduce((s,o)=>s+microsToCurrency(o.amount),0)},
+    lost:{count:lost.length,amount:lost.reduce((s,o)=>s+microsToCurrency(o.amount),0)},
+    deals:filtered.map(o=>({
+      name:o.name,stage:o.stage,amount:microsToCurrency(o.amount),
+      close:o.closeDate?o.closeDate.substring(0,10):'',
+      company:o.company?.name||''
+    })),
+    _live:true
+  };
+}
+
+async function connectCRM(){
+  const input=document.getElementById('crmKeyInput');
+  const status=document.getElementById('crmStatus');
+  const key=input.value.trim();
+  if(!key){status.className='crm-status err';status.textContent='Ingresa un API Key';return;}
+
+  status.className='crm-status loading';status.textContent='Probando conexión…';
+  crmKey=key;
+
+  try{
+    const [ppl,comp,opps]=await Promise.all([
+      twentyFetch('/rest/people?limit=1'),
+      twentyFetch('/rest/companies?limit=1'),
+      twentyFetch('/rest/opportunities?limit=1')
+    ]);
+    const pc=ppl.totalCount||0,cc=comp.totalCount||0,oc=opps.totalCount||0;
+    status.className='crm-status ok';
+    status.textContent='Conectado · '+pc.toLocaleString('es-MX')+' people · '+cc.toLocaleString('es-MX')+' companies · '+oc+' opportunities';
+    setCrmKey(key);
+    crmLive=true;
+    document.getElementById('crmBtn').classList.add('connected');
+    document.getElementById('crmBtn').textContent='CRM ●';
+    document.getElementById('crmDisconnect').style.display='';
+    document.getElementById('crmConnect').textContent='Reconectar';
+    renderAll(currentQ);
+    setTimeout(()=>document.getElementById('crmOverlay').classList.remove('open'),1200);
+  }catch(e){
+    status.className='crm-status err';
+    status.textContent='Error: '+e.message;
+    crmKey=null;crmLive=false;
+  }
+}
+
+function disconnectCRM(){
+  clearCrmKey();
+  crmKey=null;crmLive=false;
+  document.getElementById('crmBtn').classList.remove('connected');
+  document.getElementById('crmBtn').textContent='CRM';
+  document.getElementById('crmStatus').className='crm-status';
+  document.getElementById('crmStatus').textContent='';
+  document.getElementById('crmDisconnect').style.display='none';
+  document.getElementById('crmConnect').textContent='Conectar';
+  document.getElementById('crmKeyInput').value='';
+  renderAll(currentQ);
+}
+
+function initCRM(){
+  const saved=getCrmKey();
+  if(saved){
+    crmKey=saved;
+    document.getElementById('crmKeyInput').value=saved.substring(0,20)+'…';
+    crmLive=true;
+    document.getElementById('crmBtn').classList.add('connected');
+    document.getElementById('crmBtn').textContent='CRM ●';
+    document.getElementById('crmDisconnect').style.display='';
+    document.getElementById('crmConnect').textContent='Reconectar';
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// DATA — sample data structured for quarterly filtering
+// ═══════════════════════════════════════════════════════════════════
+const INK="#141519",MAG="#FF2D6B",VIO="#6C4BF5",LIME="#12B981",AMB="#F5A524",BLUE="#3552C4",MUT="#6B7280",LINE="#E4E5E9";
+const money=v=>"MX$"+Math.round(v).toLocaleString('es-MX');
+const moneyK=v=>{v=Math.round(v);if(v>=1e6)return"MX$"+(v/1e6).toFixed(1).replace(/\.0$/,'')+"M";if(v>=1e3)return"MX$"+(v/1e3).toFixed(0)+"K";return"MX$"+v.toLocaleString('es-MX');};
+const num=v=>v.toLocaleString('es-MX');
+const pct=v=>v.toFixed(2)+"%";
+const reg_={};function kill(id){if(reg_[id]){reg_[id].destroy();delete reg_[id];}}
+
+const PAID_CODES=["SKILLS30M","EARLYQ4","CELEBRATE26L","ANIVERSARIO26MC","ANIVERSARIO26M","ANIVERSARIO26MC"];
+
+// ── Masterclass data (by quarter) ──
+const mcData={
+  q3:{
+    masterclasses:[
+      {name:"Jorge Porro · Resolver Problemas",registros:156,meta:180,cpRegMeta:12.80,cpRegGoogle:0,invMeta:1996,invGoogle:0,invLinkedin:890,metaRegs:138,linkedinRegs:18,roles:{"Gerente":22,"Director/C-Level":18,"Fundador/CEO":16,"Comercial/Ventas":14,"Marketing":12,"Operaciones":10,"Finanzas":8,"Product Manager":7,"HR/RRHH":6,"Consultor":5,"Otro":38}},
+      {name:"Aumenta Productividad con IA",registros:203,meta:180,cpRegMeta:8.40,cpRegGoogle:0,invMeta:1550,invGoogle:0,invLinkedin:0,metaRegs:185,linkedinRegs:0,roles:{"Director/C-Level":28,"Gerente":24,"Marketing":20,"Fundador/CEO":18,"Product Manager":15,"Comercial/Ventas":14,"Operaciones":12,"Consultor":10,"IT/Tech":9,"HR/RRHH":8,"Otro":45}}
+    ],
+    totalInv:4436,
+    empresas:[
+      {name:"Siemens",desc:"Conglomerado industrial y tecnológico alemán",emp:"~320,000",rev:"€75,000M",rol:"Gerente Logística",ch:"Meta"},
+      {name:"Tata Consultancy Services",desc:"Gigante indio de TI y consultoría",emp:"~600,000",rev:"US$29,000M",rol:"HR Business Partner",ch:"Meta"},
+      {name:"Grupo Modelo",desc:"Cervecera mexicana (AB InBev): Corona, Modelo",emp:"~30,000+",rev:"Líder cervecero MX",rol:"Go-to-Market Manager",ch:"Meta"},
+      {name:"BBVA México",desc:"Banco líder en México",emp:"~120,000",rev:"Banca #1 MX",rol:"Product Owner",ch:"Meta"},
+      {name:"Oxxo · FEMSA",desc:"Mayor cadena de conveniencia de LatAm",emp:"~350,000",rev:"+22,000 tiendas",rol:"Gerente Comercial",ch:"Meta"},
+      {name:"Emerson",desc:"Multinacional de automatización industrial",emp:"~65,000",rev:"US$17,000M",rol:"Compras",ch:"Meta"},
+      {name:"MongoDB",desc:"Base de datos líder",emp:"~5,000",rev:"US$1,700M",rol:"Account Executive",ch:"LinkedIn"},
+      {name:"Tec de Monterrey",desc:"Universidad privada líder en LatAm",emp:"~35,000",rev:"Educación superior",rol:"Director Académico",ch:"LinkedIn"}
+    ]
+  },
+  q2:{
+    masterclasses:[
+      {name:"Jesús Izazaga · Busca el Cómo",registros:351,meta:180,cpRegMeta:5.20,cpRegGoogle:0,invMeta:1825,invGoogle:0,invLinkedin:420,metaRegs:317,linkedinRegs:34,roles:{"Gerente":40,"Director/C-Level":30,"Fundador/CEO":25,"Comercial/Ventas":22,"Marketing":20,"Operaciones":18,"Finanzas":12,"Consultor":10,"Otro":174}},
+      {name:"León Ruiz · Finance Leadership",registros:66,meta:180,cpRegMeta:22.00,cpRegGoogle:0,invMeta:1452,invGoogle:0,invLinkedin:0,metaRegs:37,linkedinRegs:0,roles:{"Finanzas":12,"Director/C-Level":8,"Gerente":7,"CEO":6,"Consultor":5,"Otro":28}}
+    ],
+    totalInv:3697,
+    empresas:[]
+  },
+  q1:{masterclasses:[],totalInv:0,empresas:[]},
+  q4:{masterclasses:[],totalInv:0,empresas:[]}
+};
+
+// ── Cursos & Bootcamps data (by quarter) ──
+const cursosData={
+  q3:{
+    cursos:[
+      {name:"Claude (IA) · Inicial + Avanzado",ventasPaid:5,ventasOrg:3,meta:15,invMeta:3739,invGoogle:1661,ingPaid:28448,ingOrg:17069,codigos:"EARLYQ4, SKILLS30M"},
+      {name:"Bootcamp B2B Sales & Mkt",ventasPaid:4,ventasOrg:1,meta:15,invMeta:9889,invGoogle:0,ingPaid:26268,ingOrg:6567,codigos:"EARLYQ4"},
+      {name:"Human-Centered Productivity",ventasPaid:1,ventasOrg:0,meta:15,invMeta:4622,invGoogle:0,ingPaid:5690,ingOrg:0,codigos:"SKILLS30M"},
+      {name:"Product Management",ventasPaid:0,ventasOrg:1,meta:15,invMeta:4138,invGoogle:0,ingPaid:0,ingOrg:5690,codigos:"—"},
+      {name:"Personal Finance",ventasPaid:0,ventasOrg:0,meta:15,invMeta:4639,invGoogle:0,ingPaid:0,ingOrg:0,codigos:"—"},
+      {name:"Marketing Strategies",ventasPaid:2,ventasOrg:1,meta:15,invMeta:1002,invGoogle:0,ingPaid:11380,ingOrg:5690,codigos:"SKILLS30M"},
+      {name:"Desbloquea la Creatividad (BC)",ventasPaid:1,ventasOrg:0,meta:15,invMeta:0,invGoogle:0,ingPaid:6657,ingOrg:0,codigos:"CELEBRATE26L"},
+      {name:"Leadership & Management",ventasPaid:1,ventasOrg:0,meta:15,invMeta:0,invGoogle:0,ingPaid:5690,ingOrg:0,codigos:"ANIVERSARIO26M"}
+    ],
+    formRegistros:68,
+    funnel:{impressions:890243,clicks:15780,lpv:6200,formCompletions:68,ventas:19}
+  },
+  q2:{
+    cursos:[
+      {name:"Claude (IA)",ventasPaid:11,ventasOrg:7,meta:15,invMeta:6483,invGoogle:0,ingPaid:62587,ingOrg:39821,codigos:"EARLYQ4"},
+      {name:"Problem Solving",ventasPaid:2,ventasOrg:3,meta:15,invMeta:1200,invGoogle:0,ingPaid:11380,ingOrg:17069,codigos:"SKILLS30M"},
+      {name:"Agile Leadership",ventasPaid:1,ventasOrg:5,meta:15,invMeta:960,invGoogle:0,ingPaid:5690,ingOrg:28448,codigos:"SKILLS30M"},
+      {name:"Effective Communications",ventasPaid:2,ventasOrg:1,meta:15,invMeta:884,invGoogle:0,ingPaid:11380,ingOrg:5690,codigos:"SKILLS30M"},
+      {name:"Marketing Strategies",ventasPaid:3,ventasOrg:0,meta:15,invMeta:1002,invGoogle:0,ingPaid:17069,ingOrg:0,codigos:"EARLYQ4"}
+    ],
+    formRegistros:47,
+    funnel:{impressions:650000,clicks:11200,lpv:4800,formCompletions:47,ventas:35}
+  },
+  q1:{cursos:[],formRegistros:0,funnel:{impressions:0,clicks:0,lpv:0,formCompletions:0,ventas:0}},
+  q4:{cursos:[],formRegistros:0,funnel:{impressions:0,clicks:0,lpv:0,formCompletions:0,ventas:0}}
+};
+
+// ── Campaign data (Meta) — Real data from Meta Marketing API ──
+const META_ACCOUNT_ID='10100128746698390';
+const META_API_VER='v21.0';
+let metaToken=null;
+let metaLive=false;
+
+function getMetaKey(){try{return localStorage.getItem('meta_ads_token')||null}catch(e){return null}}
+function setMetaKey(k){try{localStorage.setItem('meta_ads_token',k)}catch(e){}}
+function clearMetaKey(){try{localStorage.removeItem('meta_ads_token')}catch(e){}}
+
+async function metaFetch(endpoint){
+  if(!metaToken)throw new Error('No Meta token');
+  const url=`https://graph.facebook.com/${META_API_VER}/${endpoint}${endpoint.includes('?')?'&':'?'}access_token=${metaToken}`;
+  const r=await fetch(url);
+  if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.error?.message||r.status+' '+r.statusText);}
+  return r.json();
+}
+
+async function fetchMetaCampaigns(q){
+  const range=quarterRange(q);
+  if(!range)return[];
+  const since=range.gte.substring(0,10);
+  const until=range.lte.substring(0,10);
+  const fields='name,objective,effective_status,insights.time_range({"since":"'+since+'","until":"'+until+'"}){spend,impressions,reach,clicks,ctr,cpc,actions,cost_per_action_type}';
+  const data=await metaFetch(META_ACCOUNT_ID+'/campaigns?fields='+encodeURIComponent(fields)+'&limit=100');
+  const camps=[];
+  for(const c of (data.data||[])){
+    const ins=c.insights?.data?.[0];
+    if(!ins)continue;
+    const spent=parseFloat(ins.spend||0);
+    if(spent<50)continue;
+    const name=(c.name||'').replace('RO_MX_SAL_PRO_','').replace('RO_MX_SAL_BA_','');
+    const objMap={OUTCOME_LEADS:'Leads',OUTCOME_SALES:'Ventas',OUTCOME_ENGAGEMENT:'Engagement',OUTCOME_TRAFFIC:'Tráfico'};
+    const stMap={ACTIVE:'active',PAUSED:'paused'};
+    const imps=parseInt(ins.impressions||0);
+    const reach=parseInt(ins.reach||0);
+    const clicks=parseInt(ins.clicks||0);
+    const ctr=parseFloat(ins.ctr||0);
+    const cpc=parseFloat(ins.cpc||0);
+    let conv=0,convType='';
+    const actions=ins.actions||[];
+    const regAct=actions.find(a=>a.action_type==='offsite_conversion.fb_pixel_complete_registration');
+    const purchAct=actions.find(a=>a.action_type==='offsite_conversion.fb_pixel_purchase');
+    const leadAct=actions.find(a=>a.action_type==='offsite_conversion.fb_pixel_lead');
+    const appAct=actions.find(a=>a.action_type==='submit_application');
+    if(regAct){conv=parseInt(regAct.value);convType='registros';}
+    else if(purchAct){conv=parseInt(purchAct.value);convType='compras';}
+    else if(leadAct){conv=parseInt(leadAct.value);convType='leads';}
+    else if(appAct){conv=parseInt(appAct.value);convType='aplicaciones';}
+    const cpa=conv>0?spent/conv:null;
+    camps.push({name,obj:objMap[c.objective]||c.objective,st:stMap[c.effective_status]||'paused',spend:Math.round(spent*100)/100,imp:imps,reach,clicks,ctr:Math.round(ctr*100)/100,cpc:Math.round(cpc*100)/100,conv,convType,cpa:cpa?Math.round(cpa*100)/100:null});
+  }
+  camps.sort((a,b)=>b.spend-a.spend);
+  return camps;
+}
+
+async function connectMeta(){
+  const input=document.getElementById('metaKeyInput');
+  const status=document.getElementById('metaStatus');
+  const key=input.value.trim();
+  if(!key){status.className='crm-status err';status.textContent='Ingresa un Access Token';return;}
+  status.className='crm-status loading';status.textContent='Probando conexión…';
+  metaToken=key;
+  try{
+    const acct=await metaFetch(META_ACCOUNT_ID+'?fields=name,account_status,currency,amount_spent');
+    status.className='crm-status ok';
+    status.textContent='Conectado · '+acct.name+' · '+acct.currency+' · Gastado: MX$'+parseFloat(acct.amount_spent||0).toLocaleString('es-MX');
+    setMetaKey(key);
+    metaLive=true;
+    document.getElementById('metaBtn').classList.add('connected');
+    document.getElementById('metaBtn').textContent='Meta Ads ●';
+    document.getElementById('metaDisconnect').style.display='';
+    document.getElementById('metaConnect').textContent='Reconectar';
+    renderAll(currentQ);
+    setTimeout(()=>document.getElementById('metaOverlay').classList.remove('open'),1200);
+  }catch(e){
+    status.className='crm-status err';
+    status.textContent='Error: '+e.message;
+    metaToken=null;metaLive=false;
+  }
+}
+
+function disconnectMeta(){
+  clearMetaKey();
+  metaToken=null;metaLive=false;
+  document.getElementById('metaBtn').classList.remove('connected');
+  document.getElementById('metaBtn').textContent='Meta Ads';
+  document.getElementById('metaStatus').className='crm-status';
+  document.getElementById('metaStatus').textContent='';
+  document.getElementById('metaDisconnect').style.display='none';
+  document.getElementById('metaConnect').textContent='Conectar';
+  document.getElementById('metaKeyInput').value='';
+  renderAll(currentQ);
+}
+
+function initMeta(){
+  const saved=getMetaKey();
+  if(saved){
+    metaToken=saved;
+    document.getElementById('metaKeyInput').value=saved.substring(0,20)+'…';
+    metaLive=true;
+    document.getElementById('metaBtn').classList.add('connected');
+    document.getElementById('metaBtn').textContent='Meta Ads ●';
+    document.getElementById('metaDisconnect').style.display='';
+    document.getElementById('metaConnect').textContent='Reconectar';
+  }
+}
+
+const metaCampaigns={
+  q3:[
+    {name:"Cursos_Interacción",obj:"Engagement",st:"paused",spend:23514.87,imp:584462,reach:394762,clicks:9603,ctr:1.64,cpc:2.45,conv:68,convType:"aplicaciones",cpa:345.81},
+    {name:"Cursos AI_CLAUDE",obj:"Engagement",st:"paused",spend:10156.50,imp:211639,reach:148535,clicks:3416,ctr:1.61,cpc:2.97,conv:37,convType:"aplicaciones",cpa:274.50},
+    {name:"Masterclass_v2_19AGO",obj:"Leads",st:"active",spend:9853.23,imp:191485,reach:73299,clicks:3237,ctr:1.69,cpc:3.04,conv:568,convType:"registros",cpa:17.35},
+    {name:"Bootcamps_v2_19AGO",obj:"Engagement",st:"paused",spend:7192.52,imp:192845,reach:137018,clicks:3066,ctr:1.59,cpc:2.35,conv:14,convType:"aplicaciones",cpa:513.75},
+    {name:"Programas Corporativos",obj:"Tráfico",st:"paused",spend:4936.13,imp:387638,reach:289307,clicks:5910,ctr:1.52,cpc:0.84,conv:4236,convType:"LPV",cpa:1.17},
+    {name:"Masterclass",obj:"Leads",st:"paused",spend:3542.85,imp:39776,reach:14141,clicks:617,ctr:1.55,cpc:5.74,conv:122,convType:"registros",cpa:29.04},
+    {name:"Cursos AI_CLAUDE_Venta",obj:"Ventas",st:"paused",spend:3393.76,imp:58144,reach:43258,clicks:1112,ctr:1.91,cpc:3.05,conv:9,convType:"compras",cpa:377.08},
+    {name:"Personal Finance",obj:"Engagement",st:"paused",spend:3259.59,imp:88862,reach:69963,clicks:1453,ctr:1.64,cpc:2.24,conv:10,convType:"aplicaciones",cpa:325.96},
+    {name:"Human_Centered Productivity",obj:"Engagement",st:"paused",spend:3254.76,imp:110962,reach:94434,clicks:1556,ctr:1.40,cpc:2.09,conv:12,convType:"aplicaciones",cpa:271.23},
+    {name:"Product Management",obj:"Engagement",st:"paused",spend:3239.77,imp:102271,reach:80967,clicks:1639,ctr:1.60,cpc:1.98,conv:17,convType:"aplicaciones",cpa:190.57},
+    {name:"if-mc-28apr-lead-mar25",obj:"Leads",st:"paused",spend:2793.01,imp:27187,reach:11642,clicks:565,ctr:2.08,cpc:4.94,conv:0,convType:"",cpa:null},
+    {name:"if-b2b-bootcamp-lead-jun25",obj:"Leads",st:"paused",spend:2312.23,imp:10906,reach:4281,clicks:532,ctr:4.88,cpc:4.35,conv:0,convType:"",cpa:null},
+    {name:"Bootcamps",obj:"Engagement",st:"paused",spend:1912.16,imp:38735,reach:24144,clicks:510,ctr:1.32,cpc:3.75,conv:8,convType:"aplicaciones",cpa:239.02},
+    {name:"Bootcamps_Venta",obj:"Ventas",st:"paused",spend:1781.15,imp:21136,reach:10615,clicks:225,ctr:1.06,cpc:7.92,conv:1,convType:"compras",cpa:1781.15},
+    {name:"Personal Finance_Venta",obj:"Ventas",st:"paused",spend:1379.27,imp:20402,reach:11850,clicks:358,ctr:1.75,cpc:3.85,conv:4,convType:"compras",cpa:344.82},
+    {name:"Human_Centered Productivity_Venta",obj:"Ventas",st:"paused",spend:1367.00,imp:27368,reach:13255,clicks:365,ctr:1.33,cpc:3.75,conv:1,convType:"compras",cpa:1367.00},
+    {name:"Catálogo",obj:"Ventas",st:"paused",spend:1163.82,imp:21678,reach:14072,clicks:481,ctr:2.22,cpc:2.42,conv:5,convType:"compras",cpa:232.76},
+    {name:"if-courses-sale-jun25",obj:"Ventas",st:"paused",spend:1130.63,imp:13397,reach:3555,clicks:109,ctr:0.81,cpc:10.37,conv:0,convType:"",cpa:null},
+    {name:"Cursos y Bootcamps",obj:"Ventas",st:"paused",spend:1068.28,imp:12780,reach:4959,clicks:165,ctr:1.29,cpc:6.47,conv:0,convType:"",cpa:null},
+    {name:"Product Management_Venta",obj:"Ventas",st:"paused",spend:897.86,imp:17391,reach:10392,clicks:217,ctr:1.25,cpc:4.14,conv:3,convType:"compras",cpa:299.29},
+    {name:"Bootcamps_Venta_v2",obj:"Ventas",st:"paused",spend:829.68,imp:8477,reach:5743,clicks:228,ctr:2.69,cpc:3.64,conv:4,convType:"compras",cpa:207.42}
+  ],
+  q2:[
+    {name:"if-courses-sale-jun25",obj:"Ventas",st:"paused",spend:1130.63,imp:13397,reach:3555,clicks:109,ctr:0.81,cpc:10.37,conv:0,convType:"compras",cpa:null},
+    {name:"if-mc-28apr-lead-mar25",obj:"Leads",st:"paused",spend:2793.01,imp:27187,reach:11642,clicks:565,ctr:2.08,cpc:4.94,conv:0,convType:"",cpa:null},
+    {name:"if-b2b-bootcamp-lead-jun25",obj:"Leads",st:"paused",spend:2312.23,imp:10906,reach:4281,clicks:532,ctr:4.88,cpc:4.35,conv:0,convType:"leads",cpa:null}
+  ]
+};
+
+// ── Campaign data (Google) ──
+const googleCampaigns={
+  q3:[
+    {name:"Bootcamp B2B · Search",st:"active",imp:4200,clicks:380,ctr:9.05,cost:3160,cpc:8.32},
+    {name:"Cursos IA Claude · Search",st:"active",imp:2800,clicks:210,ctr:7.50,cost:1661,cpc:7.91},
+    {name:"Product Management · Search",st:"paused",imp:1100,clicks:85,ctr:7.73,cost:680,cpc:8.00},
+    {name:"Personal Finance · Search",st:"paused",imp:900,clicks:60,ctr:6.67,cost:520,cpc:8.67}
+  ],
+  q2:[
+    {name:"Cursos Collective · Search",st:"paused",imp:3500,clicks:290,ctr:8.29,cost:2400,cpc:8.28}
+  ]
+};
+
+const googleKeywords={
+  q3:[
+    {term:"bootcamp ventas b2b",clicks:95,ctr:12.3,cost:790,cpc:8.32},
+    {term:"curso inteligencia artificial",clicks:82,ctr:9.8,cost:650,cpc:7.93},
+    {term:"bootcamp marketing digital mexico",clicks:68,ctr:10.5,cost:566,cpc:8.32},
+    {term:"curso claude ai",clicks:55,ctr:8.2,cost:435,cpc:7.91},
+    {term:"capacitacion empresarial ia",clicks:42,ctr:11.1,cost:350,cpc:8.33},
+    {term:"curso product management",clicks:35,ctr:7.7,cost:280,cpc:8.00},
+    {term:"bootcamp liderazgo",clicks:28,ctr:6.5,cost:233,cpc:8.32},
+    {term:"curso finanzas personales online",clicks:22,ctr:5.8,cost:191,cpc:8.68}
+  ]
+};
+
+// ═══════════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════════
+let currentQ="q3";
+let currentView="all";
+let currentPlat="meta";
+
+// ═══════════════════════════════════════════════════════════════════
+// QUARTER SELECTOR
+// ═══════════════════════════════════════════════════════════════════
+const qLabels={all:"Todo 2026",q1:"Q1 2026 · ene–mar",q2:"Q2 2026 · abr–jun",q3:"Q3 2026 · jul–sep",q4:"Q4 2026 · oct–dic"};
+document.getElementById('quarterSel').addEventListener('change',function(){
+  const v=this.value;
+  if(v==='all'){renderAll('q3');document.getElementById('periodLabel').textContent="Todo 2026 · actualizado 19 oct · MXN";return;}
+  currentQ=v;
+  document.getElementById('periodLabel').textContent=qLabels[v]+" · actualizado 19 oct · MXN";
+  renderAll(v);
+});
+
+// ═══════════════════════════════════════════════════════════════════
+// RENDERS
+// ═══════════════════════════════════════════════════════════════════
+
+async function renderAll(q){
+  currentQ=q;
+
+  if(crmLive&&crmKey){
+    try{
+      const [liveMC,liveOpps]=await Promise.all([
+        loadLiveMasterclassData(q).catch(()=>null),
+        loadLiveOpportunityData(q).catch(()=>null)
+      ]);
+      if(liveMC){
+        const sample=mcData[q];
+        if(liveMC.masterclasses.length>0){
+          renderMasterclasses(q,liveMC);
+        }else if(sample&&sample.masterclasses.length>0){
+          renderMasterclasses(q,null,liveMC);
+        }else{
+          renderMasterclasses(q,null,liveMC);
+        }
+      }else{
+        renderMasterclasses(q);
+      }
+      if(liveOpps){renderLiveOpportunities(liveOpps,q);}
+    }catch(e){
+      console.warn('CRM fetch failed, using sample data',e);
+      renderMasterclasses(q);
+    }
+  }else{
+    renderMasterclasses(q);
+  }
+
+  renderCursos(q);
+  renderMetaCampaigns(q).catch(e=>console.warn('Meta render error',e));
+  renderGoogleCampaigns(q);
+  renderInsightsAll(q);
+}
+
+function renderLiveOpportunities(data,q){
+  const card=document.getElementById('liveOppCard');
+  const el=document.getElementById('liveOppPanel');
+  if(!el||!card)return;
+  card.style.display=data._live?'block':'none';
+  if(!data._live||data.inQuarter===0){
+    el.innerHTML='<div class="kc"><div class="kl">Sin oportunidades B2B</div><div class="kv mono">—</div></div>';
+    return;
+  }
+  const stageColor={WON:LIME,ACTIVE:VIO,LOST:'#E5484D',NEW:AMB,NURTURING:'#6B7280'};
+  el.innerHTML=`
+    <div class="krow" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:14px">
+      <div class="kc good"><div class="kl">WON</div><div class="kv mono">${data.won.count}</div><div class="kf">${money(data.won.amount)}</div></div>
+      <div class="kc"><div class="kl">Active</div><div class="kv mono">${data.active.count}</div><div class="kf">${money(data.active.amount)}</div></div>
+      <div class="kc"><div class="kl">Lost</div><div class="kv mono" style="color:#E5484D">${data.lost.count}</div><div class="kf">${money(data.lost.amount)}</div></div>
+      <div class="kc"><div class="kl">Total pipeline</div><div class="kv mono">${data.total}</div><div class="kf">oportunidades en CRM</div></div>
+    </div>
+    <div style="font-size:12px;border-top:1px solid var(--line);margin-top:8px;padding-top:4px">
+      ${data.deals.slice(0,8).map(d=>`<div style="display:flex;align-items:center;gap:6px;padding:6px 0;border-bottom:1px solid #f0f0f0">
+        <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px">${d.name}</span>
+        <span class="tag" style="background:${(stageColor[d.stage]||MUT)+'1a'};color:${stageColor[d.stage]||MUT};font-size:10px;flex-shrink:0">${d.stage}</span>
+        <span class="mono" style="font-size:11px;flex-shrink:0;min-width:58px;text-align:right">${d.amount?moneyK(d.amount):'—'}</span>
+      </div>`).join('')}
+    </div>
+  `;
+}
+
+// ── 01 Masterclasses ──
+function renderMasterclasses(q,liveData,liveMeta){
+  const d=liveData||mcData[q];
+  const isLive=!!liveData&&!!liveData._live;
+  const badgeHTML=isLive?'<span class="live-badge">LIVE</span>':'';
+  const metaHTML=liveMeta?`<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin-bottom:14px">
+    <div class="kc" style="border:1px solid var(--violet-dim)"><div class="kl">People en CRM</div><div class="kv mono" style="font-size:16px">${(liveMeta._peopleCt||0).toLocaleString('es-MX')}</div></div>
+    <div class="kc" style="border:1px solid var(--violet-dim)"><div class="kl">Companies</div><div class="kv mono" style="font-size:16px">${(liveMeta._companyCt||0).toLocaleString('es-MX')}</div></div>
+    <div class="kc" style="border:1px solid var(--violet-dim)"><div class="kl">Events</div><div class="kv mono" style="font-size:16px">${liveMeta._eventCt||0}</div></div>
+    <div class="kc" style="border:1px solid var(--violet-dim)"><div class="kl">Participations</div><div class="kv mono" style="font-size:16px">${(liveMeta._partCt||0).toLocaleString('es-MX')}</div></div>
+  </div>`:'';
+
+  const secHead=document.querySelector('#sec1 .sec-head h2');
+  if(secHead&&isLive&&!secHead.querySelector('.live-badge'))secHead.insertAdjacentHTML('beforeend',' '+badgeHTML);
+
+  if(!d||!d.masterclasses.length){
+    document.getElementById('mcKpis').innerHTML=metaHTML+'<div class="kc"><div class="kl">Sin datos de masterclasses'+(isLive?' en Twenty para este Q':'')+'</div><div class="kv mono">—</div><div class="kf">'+(isLive?'Los eventos y participaciones aún no tienen registros en este periodo':'No hay masterclasses en este periodo')+'</div></div>';
+    document.getElementById('mcProgress').innerHTML='';
+    document.getElementById('mcCompanies').innerHTML='';
+    return;
+  }
+  const totalRegs=d.masterclasses.reduce((s,m)=>s+m.registros,0);
+  const totalMeta=d.masterclasses.reduce((s,m)=>s+m.metaRegs,0);
+  const totalLinkedin=d.masterclasses.reduce((s,m)=>s+m.linkedinRegs,0);
+  const avgCPR=d.totalInv/totalRegs;
+  const metaInv=d.masterclasses.reduce((s,m)=>s+m.invMeta,0);
+  const linkedinInv=d.masterclasses.reduce((s,m)=>s+m.invLinkedin,0);
+
+  document.getElementById('mcKpis').innerHTML=metaHTML+`
+    <div class="kc mc"><div class="kl">Total registros</div><div class="kv mono">${num(totalRegs)}</div><div class="kf">${d.masterclasses.length} masterclasses ${isLive?'(CRM)':'activas'}</div></div>
+    <div class="kc"><div class="kl">Registros Meta</div><div class="kv mono">${num(totalMeta)}</div><div class="kf">${pct(totalMeta/totalRegs*100)} del total</div></div>
+    <div class="kc"><div class="kl">Registros LinkedIn</div><div class="kv mono">${num(totalLinkedin)}</div><div class="kf">Perfil B2B senior</div></div>
+    <div class="kc good"><div class="kl">CPR promedio</div><div class="kv mono">${money(avgCPR)}</div><div class="kf">inversión total ÷ registros</div></div>
+    <div class="kc"><div class="kl">Inversión Meta</div><div class="kv mono">${money(metaInv)}</div><div class="kf">pauta masterclasses</div></div>
+    <div class="kc"><div class="kl">Inversión LinkedIn</div><div class="kv mono">${money(linkedinInv)}</div><div class="kf">pauta masterclasses B2B</div></div>
+  `;
+
+  document.getElementById('mcProgress').innerHTML=d.masterclasses.map(m=>{
+    const p=Math.min(Math.round(m.registros/m.meta*100),100);
+    const col=p>=100?LIME:(p>=70?AMB:MAG);
+    return `<div class="pbar-wrap"><div class="pbar-head"><span class="pbar-name">${m.name}</span><span class="pbar-vals"><b>${m.registros}</b> / ${m.meta}</span></div><div class="pbar-track"><div class="pbar-fill" style="width:${p}%;background:${col}"></div><span class="pbar-pct">${p}%</span></div></div>`;
+  }).join('');
+
+  if(d.masterclasses.length){
+    const allRoles={};
+    d.masterclasses.forEach(m=>{for(const[k,v]of Object.entries(m.roles)){allRoles[k]=(allRoles[k]||0)+v;}});
+    const sorted=Object.entries(allRoles).sort((a,b)=>b[1]-a[1]).slice(0,10);
+    kill('mcRolesChart');
+    const ctx=document.getElementById('mcRolesChart');
+    if(ctx){
+      const colors=[VIO,'#9085e9','#b4afe8',MAG,'#ff6b94','#ff99b4',AMB,BLUE,LIME,MUT];
+      reg_['mcRolesChart']=new Chart(ctx,{type:'bar',data:{labels:sorted.map(s=>s[0]),datasets:[{data:sorted.map(s=>s[1]),backgroundColor:colors.slice(0,sorted.length),borderRadius:4,barThickness:24}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.raw+' registros'}}},scales:{x:{grid:{color:LINE,drawTicks:false},ticks:{font:{family:'IBM Plex Mono',size:11}}},y:{grid:{display:false},ticks:{font:{size:12}}}}}});
+    }
+  }
+
+  kill('mcSourceChart');
+  const srcCtx=document.getElementById('mcSourceChart');
+  if(srcCtx&&d.masterclasses.length){
+    const labels=d.masterclasses.map(m=>m.name.split('·')[0].trim());
+    reg_['mcSourceChart']=new Chart(srcCtx,{type:'bar',data:{labels,datasets:[
+      {label:'Meta',data:d.masterclasses.map(m=>m.metaRegs),backgroundColor:BLUE,borderRadius:4,barThickness:28},
+      {label:'LinkedIn',data:d.masterclasses.map(m=>m.linkedinRegs),backgroundColor:VIO,borderRadius:4,barThickness:28}
+    ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{usePointStyle:true,boxWidth:8,padding:14}},tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.raw+' registros'}}},scales:{x:{grid:{display:false},ticks:{font:{size:11},maxRotation:0}},y:{grid:{color:LINE,drawTicks:false},ticks:{font:{family:'IBM Plex Mono',size:11}}}}}});
+  }
+
+  document.getElementById('mcCompanies').innerHTML=d.empresas.map(e=>`
+    <div class="co-card"><div class="co-name">${e.name}</div><div class="co-desc">${e.desc}</div>
+    <div class="co-tags"><span class="co-tag">${e.emp} empleados</span><span class="co-tag">${e.rev}</span><span class="co-tag ch">${e.ch}</span></div>
+    <div style="font-size:11px;color:var(--ink)">Rol registrado: <b>${e.rol}</b></div></div>
+  `).join('')||'<div style="color:var(--muted);font-size:13px;padding:16px">No hay datos de empresas identificadas para este periodo.</div>';
+}
+
+// ── 02 Cursos & Bootcamps ──
+function renderCursos(q){
+  const d=cursosData[q];
+  if(!d||!d.cursos.length){
+    document.getElementById('cursosKpis').innerHTML='<div class="kc"><div class="kl">Sin datos</div><div class="kv mono">—</div><div class="kf">No hay cursos en este periodo</div></div>';
+    document.getElementById('cursosProgress').innerHTML='';
+    document.getElementById('cpaTable').querySelector('tbody').innerHTML='';
+    document.getElementById('cursosFunnel').innerHTML='';
+    return;
+  }
+  const view=currentView;
+  const cursos=d.cursos;
+  const totalPaid=cursos.reduce((s,c)=>s+c.ventasPaid,0);
+  const totalOrg=cursos.reduce((s,c)=>s+c.ventasOrg,0);
+  const totalVentas=view==='paid'?totalPaid:view==='organic'?totalOrg:totalPaid+totalOrg;
+  const totalIngPaid=cursos.reduce((s,c)=>s+c.ingPaid,0);
+  const totalIngOrg=cursos.reduce((s,c)=>s+c.ingOrg,0);
+  const totalIng=view==='paid'?totalIngPaid:view==='organic'?totalIngOrg:totalIngPaid+totalIngOrg;
+  const totalInvMeta=cursos.reduce((s,c)=>s+c.invMeta,0);
+  const totalInvGoogle=cursos.reduce((s,c)=>s+c.invGoogle,0);
+  const totalInv=totalInvMeta+totalInvGoogle;
+  const roas=totalInv>0?totalIngPaid/totalInv:0;
+  const cpaPaid=totalPaid>0?totalInv/totalPaid:0;
+
+  const heroClass=totalVentas>=15*cursos.length*0.5?'good':'hero';
+  document.getElementById('cursosKpis').innerHTML=`
+    <div class="kc ${heroClass}"><div class="kl">Total ventas${view!=='all'?' ('+view+')':''}</div><div class="kv mono">${totalVentas}</div><div class="kf">${totalPaid} paid + ${totalOrg} orgánicas</div></div>
+    <div class="kc"><div class="kl">Ventas paid</div><div class="kv mono" style="color:${MAG}">${totalPaid}</div><div class="kf">Con código de descuento</div></div>
+    <div class="kc"><div class="kl">Ventas orgánicas</div><div class="kv mono" style="color:${LIME}">${totalOrg}</div><div class="kf">Sin código / directas</div></div>
+    <div class="kc"><div class="kl">Ingresos totales</div><div class="kv mono">${money(totalIng)}</div><div class="kf">paid ${money(totalIngPaid)} + org ${money(totalIngOrg)}</div></div>
+    <div class="kc"><div class="kl">Inversión total</div><div class="kv mono">${money(totalInv)}</div><div class="kf">Meta ${money(totalInvMeta)} + Google ${money(totalInvGoogle)}</div></div>
+    <div class="kc ${roas>=2?'good':roas>=1?'warn':'bad'}"><div class="kl">ROAS (paid)</div><div class="kv mono">${roas.toFixed(2)}x</div><div class="kf">ingreso paid ÷ inversión</div></div>
+    <div class="kc"><div class="kl">CPA paid</div><div class="kv mono">${cpaPaid>0?money(cpaPaid):'—'}</div><div class="kf">inversión ÷ ventas paid</div></div>
+    <div class="kc"><div class="kl">Form. completados</div><div class="kv mono">${d.formRegistros}</div><div class="kf">leads con datos (no venta)</div></div>
+  `;
+
+  document.getElementById('cursosProgress').innerHTML=cursos.map(c=>{
+    const v=view==='paid'?c.ventasPaid:view==='organic'?c.ventasOrg:c.ventasPaid+c.ventasOrg;
+    const p=Math.min(Math.round(v/c.meta*100),100);
+    const col=p>=100?LIME:(p>=50?AMB:MAG);
+    return `<div class="pbar-wrap"><div class="pbar-head"><span class="pbar-name">${c.name}</span><span class="pbar-vals"><b>${v}</b> / ${c.meta} ${view==='all'?'<span style="font-size:10px;color:'+MAG+'">'+c.ventasPaid+'p</span> + <span style="font-size:10px;color:'+LIME+'">'+c.ventasOrg+'o</span>':''}</span></div><div class="pbar-track"><div class="pbar-fill" style="width:${p}%;background:${col}"></div><span class="pbar-pct">${p}%</span></div></div>`;
+  }).join('');
+
+  const tbody=document.getElementById('cpaTable').querySelector('tbody');
+  tbody.innerHTML=cursos.map(c=>{
+    const inv=c.invMeta+c.invGoogle;
+    const cpa=c.ventasPaid>0?inv/c.ventasPaid:null;
+    const roasC=inv>0&&c.ingPaid>0?(c.ingPaid/inv).toFixed(2)+'x':'—';
+    const cpaColor=cpa===null?MUT:cpa<2000?'#0A7F58':cpa<4000?INK:MAG;
+    return `<tr><td class="name">${c.name}</td><td class="mono">${money(inv)}</td><td class="mono" style="color:${MAG};font-weight:700">${c.ventasPaid}</td><td class="mono" style="color:${LIME}">${c.ventasOrg}</td><td class="mono" style="color:${cpaColor};font-weight:700">${cpa?money(cpa):'—'}</td><td class="mono">${money(c.ingPaid+c.ingOrg)}</td><td class="mono" style="font-weight:600">${roasC}</td></tr>`;
+  }).join('')+`<tr style="border-top:2px solid var(--line)"><td class="name" style="font-weight:700">Total</td><td class="mono" style="font-weight:700">${money(totalInv)}</td><td class="mono" style="font-weight:700;color:${MAG}">${totalPaid}</td><td class="mono" style="font-weight:700;color:${LIME}">${totalOrg}</td><td class="mono" style="font-weight:700">${cpaPaid>0?money(cpaPaid):'—'}</td><td class="mono" style="font-weight:700">${money(totalIngPaid+totalIngOrg)}</td><td class="mono" style="font-weight:700">${roas.toFixed(2)}x</td></tr>`;
+
+  kill('revenueChart');
+  const rCtx=document.getElementById('revenueChart');
+  if(rCtx){
+    const labels=cursos.map(c=>c.name.length>20?c.name.slice(0,18)+'…':c.name);
+    reg_['revenueChart']=new Chart(rCtx,{type:'bar',data:{labels,datasets:[
+      {label:'Paid',data:cursos.map(c=>c.ingPaid),backgroundColor:MAG,borderRadius:4,barThickness:22},
+      {label:'Orgánico',data:cursos.map(c=>c.ingOrg),backgroundColor:LIME,borderRadius:4,barThickness:22}
+    ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{usePointStyle:true,boxWidth:8,padding:14}},tooltip:{callbacks:{label:c=>c.dataset.label+': '+money(c.raw)}}},scales:{x:{grid:{display:false},ticks:{font:{size:10},maxRotation:45}},y:{grid:{color:LINE,drawTicks:false},ticks:{font:{family:'IBM Plex Mono',size:11},callback:v=>money(v)}}}}});
+  }
+
+  const f=d.funnel;
+  if(f&&f.impressions){
+    const stages=[
+      {label:'Impresiones',val:f.impressions,color:INK},
+      {label:'Clics',val:f.clicks,color:'#3B3D45'},
+      {label:'Landing Page Views',val:f.lpv,color:VIO},
+      {label:'Formularios completados',val:f.formCompletions,color:AMB},
+      {label:'Ventas',val:f.ventas,color:LIME}
+    ];
+    document.getElementById('cursosFunnel').innerHTML=stages.map((s,i)=>{
+      const next=stages[i+1];
+      const gap=next?`<div class="fnl-gap"><span>↓</span><span class="rate">${(next.val/s.val*100).toFixed(1)}%</span><span>pasan a ${next.label.toLowerCase()}</span></div>`:'';
+      return `<div class="fnl-stage" style="background:${s.color}"><span class="fl">${s.label}</span><span class="fv">${num(s.val)}</span></div>${gap}`;
+    }).join('');
+  }
+}
+
+// ── 03 Meta Campaigns ──
+async function renderMetaCampaigns(q){
+  let camps=metaCampaigns[q]||[];
+  let isLive=false;
+  const badge=document.getElementById('metaLiveBadge');
+
+  if(metaLive&&metaToken){
+    try{
+      const liveCamps=await fetchMetaCampaigns(q);
+      if(liveCamps.length>0){camps=liveCamps;isLive=true;}
+    }catch(e){console.warn('Meta Ads live fetch failed, using cached data',e);}
+  }
+
+  if(badge)badge.style.display=isLive?'':'none';
+
+  if(!camps.length){
+    document.getElementById('metaKpis').innerHTML='<div class="kc"><div class="kl">Sin datos</div><div class="kv mono">—</div></div>';
+    document.getElementById('metaCampTable').querySelector('tbody').innerHTML='';
+    return;
+  }
+  const totalSpend=camps.reduce((s,c)=>s+c.spend,0);
+  const totalImp=camps.reduce((s,c)=>s+c.imp,0);
+  const totalReach=camps.reduce((s,c)=>s+(c.reach||0),0);
+  const totalClicks=camps.reduce((s,c)=>s+c.clicks,0);
+  const totalConv=camps.reduce((s,c)=>s+c.conv,0);
+  const avgCTR=totalImp>0?camps.reduce((s,c)=>s+c.ctr*c.imp,0)/totalImp:0;
+  const avgCPC=totalClicks>0?totalSpend/totalClicks:0;
+  const regCamps=camps.filter(c=>c.convType==='registros');
+  const totalRegs=regCamps.reduce((s,c)=>s+c.conv,0);
+  const totalRegSpend=regCamps.reduce((s,c)=>s+c.spend,0);
+  const saleCamps=camps.filter(c=>c.convType==='compras');
+  const totalSales=saleCamps.reduce((s,c)=>s+c.conv,0);
+  const totalSaleSpend=saleCamps.reduce((s,c)=>s+c.spend,0);
+
+  document.getElementById('metaKpis').innerHTML=`
+    <div class="kc hero"><div class="kl">Inversión Meta</div><div class="kv mono">${moneyK(totalSpend)}</div><div class="kf">${camps.length} campañas</div></div>
+    <div class="kc"><div class="kl">Impresiones</div><div class="kv mono">${num(totalImp)}</div><div class="kf">Alcance: ${num(totalReach)}</div></div>
+    <div class="kc"><div class="kl">CTR promedio</div><div class="kv mono">${avgCTR.toFixed(2)}%</div><div class="kf">${num(totalClicks)} clics</div></div>
+    <div class="kc"><div class="kl">CPC promedio</div><div class="kv mono">${money(avgCPC)}</div></div>
+    <div class="kc mc"><div class="kl">Registros (MC)</div><div class="kv mono">${totalRegs}</div><div class="kf">CPR ${totalRegs>0?money(totalRegSpend/totalRegs):'—'}</div></div>
+    <div class="kc"><div class="kl">Compras (Cursos)</div><div class="kv mono">${totalSales}</div><div class="kf">CPA ${totalSales>0?money(totalSaleSpend/totalSales):'—'}</div></div>
+  `;
+
+  document.getElementById('metaCampTable').querySelector('tbody').innerHTML=camps.map(c=>{
+    const cpaStr=c.cpa?money(c.cpa):'—';
+    const cpaCol=!c.cpa?MUT:c.cpa<500?'#0A7F58':c.cpa<3000?INK:MAG;
+    const convTypeLabel=c.convType||'—';
+    return `<tr><td class="name">${c.name}</td><td>${c.obj}</td><td><span class="tag ${c.st==='active'?'active':'paused'}">${c.st}</span></td><td class="mono">${moneyK(c.spend)}</td><td class="mono">${num(c.imp)}</td><td class="mono">${num(c.reach||0)}</td><td class="mono">${c.ctr}%</td><td class="mono">${money(c.cpc)}</td><td class="mono" style="font-weight:600">${c.conv}</td><td style="font-size:11px">${convTypeLabel}</td><td class="mono" style="color:${cpaCol};font-weight:600">${cpaStr}</td></tr>`;
+  }).join('');
+
+  kill('metaCtrChart');
+  const cCtx=document.getElementById('metaCtrChart');
+  if(cCtx){
+    const top12=camps.slice(0,12);
+    const labels=top12.map(c=>c.name.length>24?c.name.slice(0,22)+'…':c.name);
+    const objColors={"Ventas":MAG,"Leads":VIO,"Engagement":BLUE,"Tráfico":AMB};
+    const colors=top12.map(c=>objColors[c.obj]||MUT);
+    reg_['metaCtrChart']=new Chart(cCtx,{type:'bar',data:{labels,datasets:[{data:top12.map(c=>c.ctr),backgroundColor:colors,borderRadius:4,barThickness:18}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.raw+'% CTR'}}},scales:{x:{grid:{color:LINE,drawTicks:false},ticks:{font:{family:'IBM Plex Mono',size:11},callback:v=>v+'%'}},y:{grid:{display:false},ticks:{font:{size:10},maxRotation:0}}}}});
+  }
+
+  kill('metaSpendChart');
+  const sCtx=document.getElementById('metaSpendChart');
+  if(sCtx){
+    const byObj={};camps.forEach(c=>{byObj[c.obj]=(byObj[c.obj]||0)+c.spend;});
+    const entries=Object.entries(byObj).sort((a,b)=>b[1]-a[1]);
+    const objColors={"Ventas":MAG,"Leads":VIO,"Engagement":BLUE,"Tráfico":AMB};
+    reg_['metaSpendChart']=new Chart(sCtx,{type:'doughnut',data:{labels:entries.map(e=>e[0]),datasets:[{data:entries.map(e=>e[1]),backgroundColor:entries.map(e=>objColors[e[0]]||MUT),borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,cutout:'55%',plugins:{legend:{position:'bottom',labels:{usePointStyle:true,boxWidth:8,padding:14}},tooltip:{callbacks:{label:c=>c.label+': '+money(c.raw)}}}}});
+  }
+}
+
+// ── 03 Google Campaigns ──
+function renderGoogleCampaigns(q){
+  const camps=googleCampaigns[q]||[];
+  if(!camps.length){
+    document.getElementById('googleKpis').innerHTML='<div class="kc"><div class="kl">Sin datos</div><div class="kv mono">—</div></div>';
+    document.getElementById('googleCampTable').querySelector('tbody').innerHTML='';
+    return;
+  }
+  const totalCost=camps.reduce((s,c)=>s+c.cost,0);
+  const totalClicks=camps.reduce((s,c)=>s+c.clicks,0);
+  const totalImp=camps.reduce((s,c)=>s+c.imp,0);
+
+  document.getElementById('googleKpis').innerHTML=`
+    <div class="kc"><div class="kl">Inversión Google</div><div class="kv mono">${money(totalCost)}</div></div>
+    <div class="kc"><div class="kl">Clics totales</div><div class="kv mono">${num(totalClicks)}</div></div>
+    <div class="kc"><div class="kl">CTR promedio</div><div class="kv mono">${(totalClicks/totalImp*100).toFixed(2)}%</div></div>
+    <div class="kc"><div class="kl">CPC promedio</div><div class="kv mono">${money(totalCost/totalClicks)}</div></div>
+  `;
+
+  document.getElementById('googleCampTable').querySelector('tbody').innerHTML=camps.map(c=>`<tr><td class="name">${c.name}</td><td><span class="tag ${c.st==='active'?'active':'paused'}">${c.st}</span></td><td class="mono">${num(c.imp)}</td><td class="mono">${num(c.clicks)}</td><td class="mono">${c.ctr}%</td><td class="mono">${money(c.cost)}</td><td class="mono">${money(c.cpc)}</td></tr>`).join('');
+
+  const kws=googleKeywords[q]||[];
+  kill('googleKwChart');
+  const kCtx=document.getElementById('googleKwChart');
+  if(kCtx&&kws.length){
+    reg_['googleKwChart']=new Chart(kCtx,{type:'bar',data:{labels:kws.map(k=>k.term),datasets:[{label:'Clics',data:kws.map(k=>k.clicks),backgroundColor:BLUE,borderRadius:4,barThickness:22}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'Clics: '+c.raw+' · CTR: '+kws[c.dataIndex].ctr+'%'}}},scales:{x:{grid:{color:LINE,drawTicks:false},ticks:{font:{family:'IBM Plex Mono',size:11}}},y:{grid:{display:false},ticks:{font:{size:11}}}}}});
+  }
+}
+
+// ── Insights ──
+function renderInsightsAll(q){
+  const d=cursosData[q];
+  const mc=mcData[q];
+  const mcIns=[];
+  if(mc&&mc.masterclasses.length){
+    const over=mc.masterclasses.filter(m=>m.registros>=m.meta);
+    const under=mc.masterclasses.filter(m=>m.registros<m.meta);
+    if(over.length) mcIns.push({cls:'good',k:'MASTERCLASS',h:`${over.length} masterclass${over.length>1?'es':''} superaron meta`,p:`<b>${over.map(m=>m.name.split('·')[0].trim()).join(', ')}</b> llegaron a meta de 180 registros. El lead magnet funciona.`});
+    if(under.length) mcIns.push({cls:'watch',k:'MASTERCLASS',h:`${under.length} por debajo de meta`,p:`<b>${under.map(m=>m.name.split('·')[0].trim()).join(', ')}</b> aún no llegan a 180 registros. Revisar creativos o ampliar audiencia.`});
+  }
+
+  const cursIns=[];
+  if(d&&d.cursos.length){
+    const bestCPA=d.cursos.filter(c=>c.ventasPaid>0).sort((a,b)=>(a.invMeta+a.invGoogle)/a.ventasPaid-(b.invMeta+b.invGoogle)/b.ventasPaid)[0];
+    if(bestCPA) cursIns.push({cls:'good',k:'EFICIENCIA',h:`${bestCPA.name.split('·')[0].trim()} es el más eficiente`,p:`CPA de <b>${money((bestCPA.invMeta+bestCPA.invGoogle)/bestCPA.ventasPaid)}</b> con ${bestCPA.ventasPaid} ventas paid. Considerar escalar inversión aquí.`});
+    const noSale=d.cursos.filter(c=>c.ventasPaid===0&&c.invMeta>0);
+    if(noSale.length) cursIns.push({cls:'bad',k:'ALERTA',h:`${noSale.length} curso${noSale.length>1?'s':''} sin venta paid`,p:`<b>${noSale.map(c=>c.name.split('·')[0].trim()).join(', ')}</b> tienen inversión pero cero ventas atribuidas a paid. Revisar landing, creativos o pausar.`});
+  }
+
+  document.getElementById('mcInsights').innerHTML=mcIns.map(i=>`<div class="ins ${i.cls}"><div class="k mono">${i.k}</div><h4>${i.h}</h4><p>${i.p}</p></div>`).join('');
+  document.getElementById('cursosInsights').innerHTML=cursIns.map(i=>`<div class="ins ${i.cls}"><div class="k mono">${i.k}</div><h4>${i.h}</h4><p>${i.p}</p></div>`).join('');
+
+  const campIns=[];
+  const camps=metaCampaigns[q]||[];
+  if(camps.length){
+    const bestCTR=camps.slice().sort((a,b)=>b.ctr-a.ctr)[0];
+    campIns.push({cls:'good',k:'CTR',h:`Mejor CTR: ${bestCTR.name.replace('RO_MX_SAL_PRO_','')}`,p:`CTR de <b>${bestCTR.ctr}%</b>. ${bestCTR.conv>0?'Con '+bestCTR.conv+' conversiones.':'Sin conversiones aún — buen engagement pero revisar embudo.'}`});
+    const highSpend=camps.filter(c=>c.conv===0&&c.spend>3000);
+    if(highSpend.length) campIns.push({cls:'watch',k:'INVERSIÓN',h:`${highSpend.length} campaña${highSpend.length>1?'s':''} con gasto alto sin conversión`,p:`<b>${highSpend.map(c=>c.name.replace('RO_MX_SAL_PRO_','')).join(', ')}</b>: invertimos más de MX$3,000 sin una sola conversión. Evaluar pausa o cambio de creativos.`});
+  }
+  document.getElementById('campInsights').innerHTML=campIns.map(i=>`<div class="ins ${i.cls}"><div class="k mono">${i.k}</div><h4>${i.h}</h4><p>${i.p}</p></div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// UI: Sidebar navigation, toggles
+// ═══════════════════════════════════════════════════════════════════
+
+// Sidebar navigation
+document.querySelectorAll('.nav-item').forEach(item=>{
+  item.addEventListener('click',()=>{
+    document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+    item.classList.add('active');
+    document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+    document.getElementById(item.dataset.sec).classList.add('active');
+  });
+});
+
+// View toggle (paid/organic/all)
+function setView(btn,view){
+  currentView=view;
+  document.querySelectorAll('[data-view]').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCursos(currentQ);
+}
+
+// Platform toggle (meta/google)
+function setPlatform(btn,plat){
+  currentPlat=plat;
+  document.querySelectorAll('[data-plat]').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('plat-meta').style.display=plat==='meta'?'block':'none';
+  document.getElementById('plat-google').style.display=plat==='google'?'block':'none';
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════════
+initCRM();
+initMeta();
+renderAll('q3');
+</script>
+</body>
+</html>

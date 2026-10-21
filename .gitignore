@@ -1,0 +1,6 @@
+# Claude Code session files (may contain tokens)
+.claude/projects/
+.claude/settings*
+
+# OS
+.DS_Store
