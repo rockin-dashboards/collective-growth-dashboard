@@ -241,10 +241,10 @@
       <option value="all">Todo 2026</option>
       <option value="q1">Q1 · ene–mar 2026</option>
       <option value="q2">Q2 · abr–jun 2026</option>
-      <option value="q3" selected>Q3 · jul–sep 2026</option>
-      <option value="q4">Q4 · oct–dic 2026</option>
+      <option value="q3">Q3 · jul–sep 2026</option>
+      <option value="q4" selected>Q4 · oct–dic 2026</option>
     </select>
-    <span class="period mono" id="periodLabel">Q3 2026 · actualizado 19 oct · MXN</span>
+    <span class="period mono" id="periodLabel">Q4 2026 · actualizado 27 oct · MXN</span>
   </div>
 </div></header>
 
@@ -514,7 +514,7 @@
 // ═══════════════════════════════════════════════════════════════════
 // DASHBOARD META — update this on every publish
 // ═══════════════════════════════════════════════════════════════════
-const DASH_UPDATE={date:'2026-10-21T05:45:00Z',by:'Luz'};
+const DASH_UPDATE={date:'2026-10-27T12:00:00Z',by:'Luz'};
 
 function renderUpdateInfo(){
   const d=new Date(DASH_UPDATE.date);
@@ -779,7 +779,7 @@ const num=v=>v.toLocaleString('es-MX');
 const pct=v=>v.toFixed(2)+"%";
 const reg_={};function kill(id){if(reg_[id]){reg_[id].destroy();delete reg_[id];}}
 
-const PAID_CODES=["SKILLS30M","EARLYQ4","CELEBRATE26L","ANIVERSARIO26MC","ANIVERSARIO26M","ANIVERSARIO26MC"];
+const PAID_CODES=["SKILLS30M","EARLYQ4","CELEBRATE26L","ANIVERSARIO26MC","ANIVERSARIO26M","SALE35","SKILLS30","CELEBRA-26","CELEBRA-CA26","Q4LAST"];
 
 // ── Masterclass data (by quarter) ──
 const mcData={
@@ -809,7 +809,22 @@ const mcData={
     empresas:[]
   },
   q1:{masterclasses:[],totalInv:0,empresas:[]},
-  q4:{masterclasses:[],totalInv:0,empresas:[]}
+  q4:{
+    masterclasses:[
+      {name:"Ernesto Briceño · Ilusión de Expertise",registros:187,meta:200,cpRegMeta:28.98,cpRegGoogle:0,invMeta:3246,invGoogle:0,invLinkedin:0,metaRegs:112,linkedinRegs:0,roles:{"Gerente":28,"Director/C-Level":24,"Fundador/CEO":20,"Marketing":16,"Comercial/Ventas":14,"Finanzas":12,"Operaciones":10,"Consultor":8,"Diseño/UX":6,"HR/RRHH":5,"Otro":44}}
+    ],
+    totalInv:3246,
+    empresas:[
+      {name:"Bimbo",desc:"Panificadora líder global",emp:"~130,000",rev:"US$20,000M",rol:"Gerente de Operaciones",ch:"Meta"},
+      {name:"Ternium",desc:"Siderúrgica líder en LatAm",emp:"~22,000",rev:"US$15,000M",rol:"Especialista en Desarrollo",ch:"Meta"},
+      {name:"Gentera",desc:"Grupo financiero de microfinanzas MX",emp:"~25,000",rev:"MX$30,000M",rol:"Director de Estrategia",ch:"Meta"},
+      {name:"Warner Bros. Discovery",desc:"Conglomerado global de entretenimiento",emp:"~37,000",rev:"US$43,000M",rol:"Marketing Manager",ch:"Meta"},
+      {name:"Tata Consultancy Services",desc:"Gigante indio de TI y consultoría",emp:"~600,000",rev:"US$29,000M",rol:"HRBP",ch:"Meta"},
+      {name:"Grupo Lala",desc:"Empresa líder en lácteos en México",emp:"~40,000",rev:"MX$85,000M",rol:"Gerente Comercial",ch:"Meta"},
+      {name:"Profuturo",desc:"Afore líder en México",emp:"~5,000",rev:"Gestión de activos",rol:"Country Manager",ch:"Meta"},
+      {name:"Suburbia",desc:"Cadena departamental de El Puerto de Liverpool",emp:"~15,000",rev:"Retail MX",rol:"CHRO",ch:"Meta"}
+    ]
+  }
 };
 
 // ── Cursos & Bootcamps data (by quarter) ──
@@ -840,7 +855,20 @@ const cursosData={
     funnel:{impressions:650000,clicks:11200,lpv:4800,formCompletions:47,ventas:35}
   },
   q1:{cursos:[],formRegistros:0,funnel:{impressions:0,clicks:0,lpv:0,formCompletions:0,ventas:0}},
-  q4:{cursos:[],formRegistros:0,funnel:{impressions:0,clicks:0,lpv:0,formCompletions:0,ventas:0}}
+  q4:{
+    cursos:[
+      {name:"Productividad con Claude",ventasPaid:9,ventasOrg:17,meta:15,invMeta:5745,invGoogle:0,ingPaid:42317,ingOrg:8534,codigos:"EARLYQ4, SKILLS30, CELEBRA-26, Q4LAST"},
+      {name:"Problem Solving",ventasPaid:6,ventasOrg:10,meta:15,invMeta:6356,invGoogle:0,ingPaid:25603,ingOrg:0,codigos:"SALE35, ANIVERSARIO26MC, ANIVERSARIO26M, CELEBRA-26"},
+      {name:"Leadership & Management",ventasPaid:3,ventasOrg:5,meta:15,invMeta:1767,invGoogle:0,ingPaid:16358,ingOrg:0,codigos:"SKILLS30, Early Bird"},
+      {name:"Strategy",ventasPaid:1,ventasOrg:5,meta:15,invMeta:1325,invGoogle:0,ingPaid:3556,ingOrg:0,codigos:"CELEBRA-26"},
+      {name:"Personal Finance & Investing",ventasPaid:1,ventasOrg:3,meta:15,invMeta:4651,invGoogle:0,ingPaid:5690,ingOrg:0,codigos:"EARLYQ4"},
+      {name:"Financial Accounting",ventasPaid:1,ventasOrg:2,meta:15,invMeta:1148,invGoogle:0,ingPaid:5690,ingOrg:0,codigos:"EARLYQ4"},
+      {name:"Human-Centered Productivity",ventasPaid:1,ventasOrg:2,meta:15,invMeta:1148,invGoogle:0,ingPaid:3556,ingOrg:0,codigos:"CELEBRA-CA26"},
+      {name:"Product Management",ventasPaid:1,ventasOrg:1,meta:15,invMeta:766,invGoogle:0,ingPaid:3556,ingOrg:0,codigos:"CELEBRATE26L"}
+    ],
+    formRegistros:185,
+    funnel:{impressions:583429,clicks:9331,lpv:3500,formCompletions:185,ventas:68}
+  }
 };
 
 // ── Campaign data (Meta) — Real data from Meta Marketing API ──
@@ -979,6 +1007,14 @@ const metaCampaigns={
     {name:"if-courses-sale-jun25",obj:"Ventas",st:"paused",spend:1130.63,imp:13397,reach:3555,clicks:109,ctr:0.81,cpc:10.37,conv:0,convType:"compras",cpa:null},
     {name:"if-mc-28apr-lead-mar25",obj:"Leads",st:"paused",spend:2793.01,imp:27187,reach:11642,clicks:565,ctr:2.08,cpc:4.94,conv:0,convType:"",cpa:null},
     {name:"if-b2b-bootcamp-lead-jun25",obj:"Leads",st:"paused",spend:2312.23,imp:10906,reach:4281,clicks:532,ctr:4.88,cpc:4.35,conv:0,convType:"leads",cpa:null}
+  ],
+  q4:[
+    {name:"Campaña Aniversario",obj:"Engagement",st:"paused",spend:11564.47,imp:318601,reach:205339,clicks:4332,ctr:1.36,cpc:2.67,conv:0,convType:"aplicaciones",cpa:null},
+    {name:"Problem_Solving",obj:"Engagement",st:"active",spend:6355.49,imp:87258,reach:57417,clicks:2239,ctr:2.57,cpc:2.84,conv:7,convType:"aplicaciones",cpa:907.93},
+    {name:"Personal_Finance_v2",obj:"Engagement",st:"active",spend:4650.57,imp:124811,reach:91499,clicks:1891,ctr:1.52,cpc:2.46,conv:2,convType:"aplicaciones",cpa:2325.29},
+    {name:"Masterclass_v2",obj:"Leads",st:"paused",spend:3245.67,imp:47249,reach:21495,clicks:693,ctr:1.47,cpc:4.68,conv:112,convType:"registros",cpa:28.98},
+    {name:"RMKT",obj:"Engagement",st:"active",spend:1934.96,imp:23032,reach:15995,clicks:549,ctr:2.38,cpc:3.52,conv:8,convType:"aplicaciones",cpa:241.87},
+    {name:"Carrusel",obj:"Engagement",st:"active",spend:1520.28,imp:29727,reach:20555,clicks:320,ctr:1.08,cpc:4.75,conv:1,convType:"aplicaciones",cpa:1520.28}
   ]
 };
 
@@ -992,7 +1028,8 @@ const googleCampaigns={
   ],
   q2:[
     {name:"Cursos Collective · Search",st:"paused",imp:3500,clicks:290,ctr:8.29,cost:2400,cpc:8.28}
-  ]
+  ],
+  q4:[]
 };
 
 const googleKeywords={
@@ -1005,13 +1042,14 @@ const googleKeywords={
     {term:"curso product management",clicks:35,ctr:7.7,cost:280,cpc:8.00},
     {term:"bootcamp liderazgo",clicks:28,ctr:6.5,cost:233,cpc:8.32},
     {term:"curso finanzas personales online",clicks:22,ctr:5.8,cost:191,cpc:8.68}
-  ]
+  ],
+  q4:[]
 };
 
 // ═══════════════════════════════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════════════════════════════
-let currentQ="q3";
+let currentQ="q4";
 let currentView="all";
 let currentPlat="meta";
 
@@ -1021,7 +1059,7 @@ let currentPlat="meta";
 const qLabels={all:"Todo 2026",q1:"Q1 2026 · ene–mar",q2:"Q2 2026 · abr–jun",q3:"Q3 2026 · jul–sep",q4:"Q4 2026 · oct–dic"};
 document.getElementById('quarterSel').addEventListener('change',function(){
   const v=this.value;
-  if(v==='all'){renderAll('q3');document.getElementById('periodLabel').textContent="Todo 2026 · actualizado 19 oct · MXN";return;}
+  if(v==='all'){renderAll('q4');document.getElementById('periodLabel').textContent="Todo 2026 · actualizado 27 oct · MXN";return;}
   currentQ=v;
   document.getElementById('periodLabel').textContent=qLabels[v]+" · actualizado 19 oct · MXN";
   renderAll(v);
@@ -1415,7 +1453,7 @@ function setPlatform(btn,plat){
 renderUpdateInfo();
 initCRM();
 initMeta();
-renderAll('q3');
+renderAll('q4');
 </script>
 </body>
 </html>
