@@ -136,7 +136,7 @@
   .co-tag.ch{background:#1877F21f;color:#1877F2;font-weight:600}
 
   /* ── Insights ── */
-  .insights{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
+  .insights{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:16px}
   .ins{background:#FBFBFC;border:1px solid var(--line);border-radius:14px;padding:17px;border-left:3px solid var(--magenta)}
   .ins.good{border-left-color:var(--lime)}
   .ins.watch{border-left-color:var(--amber)}
@@ -212,6 +212,15 @@
   .live-badge::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--lime);animation:pulse 2s infinite}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 
+  .camp-filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}
+  .camp-filters .filter-group{display:flex;align-items:center;gap:6px}
+  .camp-filters .filter-label{font-family:'IBM Plex Mono';font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+  .camp-filters select,.camp-filters .fbtn{font-family:'IBM Plex Mono';font-size:11px;padding:6px 12px;border-radius:8px;border:1px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer;transition:all .15s}
+  .camp-filters select:focus{outline:none;border-color:var(--violet)}
+  .camp-filters .fbtn{background:transparent}
+  .camp-filters .fbtn.active{background:var(--violet);color:#fff;border-color:var(--violet)}
+  .camp-filters .fbtn:hover:not(.active){border-color:var(--violet);color:var(--violet)}
+
   @media(max-width:900px){
     .layout{flex-direction:column}
     .sidebar{width:100%;position:relative;top:0;height:auto;flex-direction:row;overflow-x:auto;overflow-y:hidden;border-right:none;border-bottom:1px solid rgba(255,255,255,.08)}
@@ -221,7 +230,7 @@
     .nav-item.active{border-bottom-color:var(--magenta);border-left-color:transparent}
     .nav-item .nsub{display:none}
     .sidebar-sources{display:none}
-    .grid-2,.insights{grid-template-columns:1fr}
+    .grid-2,.insights{grid-template-columns:1fr!important}
   }
   @media(max-width:640px){.brand .client{display:none}.period{display:none}}
   @media(max-width:560px){.krow{grid-template-columns:repeat(2,1fr)}}
@@ -446,10 +455,28 @@
       <p class="sec-sub">Inversión, atractividad, desgaste, creativos y conversiones por plataforma</p>
     </div>
 
-      <div class="srcbar">
-        <span class="ctrl-l" style="font-weight:600">Plataforma</span>
-        <button class="srcbtn active" data-plat="meta" onclick="setPlatform(this,'meta')">Meta Ads</button>
-        <button class="srcbtn" data-plat="google" onclick="setPlatform(this,'google')">Google Ads</button>
+      <div class="camp-filters">
+        <div class="filter-group">
+          <span class="filter-label">Periodo</span>
+          <select id="campDateRange" onchange="setCampDateRange(this.value)">
+            <option value="all" selected>Todo el Q</option>
+            <option value="7">Última semana</option>
+            <option value="15">Últimos 15 días</option>
+            <option value="30">Último mes</option>
+            <option value="90">Últimos 3 meses</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <span class="filter-label">Estado</span>
+          <button class="fbtn active" data-status="all" onclick="setCampStatus(this,'all')">Todas</button>
+          <button class="fbtn" data-status="active" onclick="setCampStatus(this,'active')">Activas</button>
+          <button class="fbtn" data-status="paused" onclick="setCampStatus(this,'paused')">Inactivas</button>
+        </div>
+        <div class="filter-group">
+          <span class="filter-label">Plataforma</span>
+          <button class="srcbtn active" data-plat="meta" onclick="setPlatform(this,'meta')">Meta Ads</button>
+          <button class="srcbtn" data-plat="google" onclick="setPlatform(this,'google')">Google Ads</button>
+        </div>
       </div>
 
       <!-- META -->
@@ -514,7 +541,7 @@
 // ═══════════════════════════════════════════════════════════════════
 // DASHBOARD META — update this on every publish
 // ═══════════════════════════════════════════════════════════════════
-const DASH_UPDATE={date:'2026-10-27T12:00:00Z',by:'Luz'};
+const DASH_UPDATE={date:'2026-10-27T18:00:00Z',by:'Luz'};
 
 function renderUpdateInfo(){
   const d=new Date(DASH_UPDATE.date);
@@ -857,17 +884,17 @@ const cursosData={
   q1:{cursos:[],formRegistros:0,funnel:{impressions:0,clicks:0,lpv:0,formCompletions:0,ventas:0}},
   q4:{
     cursos:[
-      {name:"Productividad con Claude",ventasPaid:9,ventasOrg:17,meta:15,invMeta:5745,invGoogle:0,ingPaid:42317,ingOrg:8534,codigos:"EARLYQ4, SKILLS30, CELEBRA-26, Q4LAST"},
-      {name:"Problem Solving",ventasPaid:6,ventasOrg:10,meta:15,invMeta:6356,invGoogle:0,ingPaid:25603,ingOrg:0,codigos:"SALE35, ANIVERSARIO26MC, ANIVERSARIO26M, CELEBRA-26"},
-      {name:"Leadership & Management",ventasPaid:3,ventasOrg:5,meta:15,invMeta:1767,invGoogle:0,ingPaid:16358,ingOrg:0,codigos:"SKILLS30, Early Bird"},
+      {name:"Productividad con Claude",ventasPaid:8,ventasOrg:17,meta:15,invMeta:5745,invGoogle:0,ingPaid:36627,ingOrg:8534,codigos:"EARLYQ4, SKILLS30, CELEBRA-26, Q4LAST"},
+      {name:"Problem Solving",ventasPaid:7,ventasOrg:10,meta:15,invMeta:6356,invGoogle:0,ingPaid:31293,ingOrg:0,codigos:"SALE35, ANIVERSARIO26MC, ANIVERSARIO26M, CELEBRA-26, EARLYQ4"},
+      {name:"Leadership & Management",ventasPaid:3,ventasOrg:5,meta:15,invMeta:1767,invGoogle:0,ingPaid:16358,ingOrg:0,codigos:"SKILLS30M, Early Bird"},
       {name:"Strategy",ventasPaid:1,ventasOrg:5,meta:15,invMeta:1325,invGoogle:0,ingPaid:3556,ingOrg:0,codigos:"CELEBRA-26"},
-      {name:"Personal Finance & Investing",ventasPaid:1,ventasOrg:3,meta:15,invMeta:4651,invGoogle:0,ingPaid:5690,ingOrg:0,codigos:"EARLYQ4"},
+      {name:"Personal Finance & Investing",ventasPaid:2,ventasOrg:3,meta:15,invMeta:4651,invGoogle:0,ingPaid:11379,ingOrg:0,codigos:"EARLYQ4"},
       {name:"Financial Accounting",ventasPaid:1,ventasOrg:2,meta:15,invMeta:1148,invGoogle:0,ingPaid:5690,ingOrg:0,codigos:"EARLYQ4"},
       {name:"Human-Centered Productivity",ventasPaid:1,ventasOrg:2,meta:15,invMeta:1148,invGoogle:0,ingPaid:3556,ingOrg:0,codigos:"CELEBRA-CA26"},
       {name:"Product Management",ventasPaid:1,ventasOrg:1,meta:15,invMeta:766,invGoogle:0,ingPaid:3556,ingOrg:0,codigos:"CELEBRATE26L"}
     ],
-    formRegistros:185,
-    funnel:{impressions:583429,clicks:9331,lpv:3500,formCompletions:185,ventas:68}
+    formRegistros:187,
+    funnel:{impressions:583429,clicks:9331,lpv:3500,formCompletions:187,ventas:69}
   }
 };
 
@@ -889,11 +916,10 @@ async function metaFetch(endpoint){
   return r.json();
 }
 
-async function fetchMetaCampaigns(q){
-  const range=quarterRange(q);
-  if(!range)return[];
-  const since=range.gte.substring(0,10);
-  const until=range.lte.substring(0,10);
+async function fetchMetaCampaigns(q,dateOverride){
+  let since,until;
+  if(dateOverride){since=dateOverride.since;until=dateOverride.until;}
+  else{const range=quarterRange(q);if(!range)return[];since=range.gte.substring(0,10);until=range.lte.substring(0,10);}
   const fields='name,objective,effective_status,insights.time_range({"since":"'+since+'","until":"'+until+'"}){spend,impressions,reach,clicks,ctr,cpc,actions,cost_per_action_type}';
   const data=await metaFetch(META_ACCOUNT_ID+'/campaigns?fields='+encodeURIComponent(fields)+'&limit=100');
   const camps=[];
@@ -1052,6 +1078,8 @@ const googleKeywords={
 let currentQ="q4";
 let currentView="all";
 let currentPlat="meta";
+let campDateRange="all";
+let campStatusFilter="all";
 
 // ═══════════════════════════════════════════════════════════════════
 // QUARTER SELECTOR
@@ -1291,12 +1319,22 @@ async function renderMetaCampaigns(q){
 
   if(metaLive&&metaToken){
     try{
-      const liveCamps=await fetchMetaCampaigns(q);
+      let dateOverride=null;
+      if(campDateRange!=='all'){
+        const now=new Date();
+        const until=now.toISOString().substring(0,10);
+        const d=new Date(now);d.setDate(d.getDate()-parseInt(campDateRange));
+        const since=d.toISOString().substring(0,10);
+        dateOverride={since,until};
+      }
+      const liveCamps=await fetchMetaCampaigns(q,dateOverride);
       if(liveCamps.length>0){camps=liveCamps;isLive=true;}
     }catch(e){console.warn('Meta Ads live fetch failed, using cached data',e);}
   }
 
   if(badge)badge.style.display=isLive?'':'none';
+
+  if(campStatusFilter!=='all'){camps=camps.filter(c=>c.st===campStatusFilter);}
 
   if(!camps.length){
     document.getElementById('metaKpis').innerHTML='<div class="kc"><div class="kl">Sin datos</div><div class="kv mono">—</div></div>';
@@ -1355,7 +1393,8 @@ async function renderMetaCampaigns(q){
 
 // ── 03 Google Campaigns ──
 function renderGoogleCampaigns(q){
-  const camps=googleCampaigns[q]||[];
+  let camps=googleCampaigns[q]||[];
+  if(campStatusFilter!=='all'){camps=camps.filter(c=>c.st===campStatusFilter);}
   if(!camps.length){
     document.getElementById('googleKpis').innerHTML='<div class="kc"><div class="kl">Sin datos</div><div class="kv mono">—</div></div>';
     document.getElementById('googleCampTable').querySelector('tbody').innerHTML='';
@@ -1382,38 +1421,59 @@ function renderGoogleCampaigns(q){
   }
 }
 
-// ── Insights ──
+// ── Insights (3 per section) ──
 function renderInsightsAll(q){
   const d=cursosData[q];
   const mc=mcData[q];
+  const insHTML=i=>`<div class="ins ${i.cls}"><div class="k mono">${i.k}</div><h4>${i.h}</h4><p>${i.p}</p></div>`;
+
+  // ── Masterclass insights (3) ──
   const mcIns=[];
   if(mc&&mc.masterclasses.length){
+    const totalRegs=mc.masterclasses.reduce((s,m)=>s+m.registros,0);
+    const totalMeta=mc.masterclasses.reduce((s,m)=>s+m.metaRegs,0);
+    const metaPct=totalRegs>0?Math.round(totalMeta/totalRegs*100):0;
+    mcIns.push({cls:'good',k:'REGISTROS',h:`${num(totalRegs)} registros en ${mc.masterclasses.length} masterclass${mc.masterclasses.length>1?'es':''}`,p:`Meta Ads aporta <b>${metaPct}%</b> del total de registros (<b>${num(totalMeta)}</b>). El lead magnet sigue siendo el principal canal de entrada al funnel.`});
     const over=mc.masterclasses.filter(m=>m.registros>=m.meta);
     const under=mc.masterclasses.filter(m=>m.registros<m.meta);
-    if(over.length) mcIns.push({cls:'good',k:'MASTERCLASS',h:`${over.length} masterclass${over.length>1?'es':''} superaron meta`,p:`<b>${over.map(m=>m.name.split('·')[0].trim()).join(', ')}</b> llegaron a meta de 180 registros. El lead magnet funciona.`});
-    if(under.length) mcIns.push({cls:'watch',k:'MASTERCLASS',h:`${under.length} por debajo de meta`,p:`<b>${under.map(m=>m.name.split('·')[0].trim()).join(', ')}</b> aún no llegan a 180 registros. Revisar creativos o ampliar audiencia.`});
+    if(over.length) mcIns.push({cls:'good',k:'META ALCANZADA',h:`${over.length} masterclass${over.length>1?'es':''} superaron meta`,p:`<b>${over.map(m=>m.name.split('·')[0].trim()).join(', ')}</b> llegaron a su meta de registros. El lead magnet funciona.`});
+    else mcIns.push({cls:'watch',k:'EN PROCESO',h:'Aún sin masterclass que alcance meta',p:'Todas las masterclasses están por debajo de su objetivo. Revisar creativos o ampliar audiencia en Meta.'});
+    const avgCPR=mc.totalInv>0?mc.totalInv/totalRegs:0;
+    mcIns.push({cls:avgCPR<35?'good':'watch',k:'CPR',h:`Costo por registro: ${money(avgCPR)}`,p:`Inversión total de <b>${money(mc.totalInv)}</b> para ${num(totalRegs)} registros. ${avgCPR<35?'Eficiencia por encima del benchmark.':'Considerar optimizar segmentación para reducir CPR.'}`});
   }
+  document.getElementById('mcInsights').innerHTML=mcIns.map(insHTML).join('');
 
+  // ── Cursos insights (3) ──
   const cursIns=[];
   if(d&&d.cursos.length){
+    const totalPaid=d.cursos.reduce((s,c)=>s+c.ventasPaid,0);
+    const totalOrg=d.cursos.reduce((s,c)=>s+c.ventasOrg,0);
+    const totalVentas=totalPaid+totalOrg;
+    const totalIng=d.cursos.reduce((s,c)=>s+c.ingPaid+c.ingOrg,0);
+    cursIns.push({cls:'good',k:'VENTAS',h:`${totalVentas} ventas totales · ${money(totalIng)} en ingresos`,p:`<b>${totalPaid} paid</b> (atribuidas a campañas) + <b>${totalOrg} orgánicas</b>. ${totalPaid>totalOrg?'El paid supera al orgánico — buen retorno de inversión.':'El orgánico supera al paid — fuerte tracción de marca.'}`});
     const bestCPA=d.cursos.filter(c=>c.ventasPaid>0).sort((a,b)=>(a.invMeta+a.invGoogle)/a.ventasPaid-(b.invMeta+b.invGoogle)/b.ventasPaid)[0];
-    if(bestCPA) cursIns.push({cls:'good',k:'EFICIENCIA',h:`${bestCPA.name.split('·')[0].trim()} es el más eficiente`,p:`CPA de <b>${money((bestCPA.invMeta+bestCPA.invGoogle)/bestCPA.ventasPaid)}</b> con ${bestCPA.ventasPaid} ventas paid. Considerar escalar inversión aquí.`});
-    const noSale=d.cursos.filter(c=>c.ventasPaid===0&&c.invMeta>0);
-    if(noSale.length) cursIns.push({cls:'bad',k:'ALERTA',h:`${noSale.length} curso${noSale.length>1?'s':''} sin venta paid`,p:`<b>${noSale.map(c=>c.name.split('·')[0].trim()).join(', ')}</b> tienen inversión pero cero ventas atribuidas a paid. Revisar landing, creativos o pausar.`});
+    if(bestCPA){const cpa=(bestCPA.invMeta+bestCPA.invGoogle)/bestCPA.ventasPaid;cursIns.push({cls:'good',k:'EFICIENCIA',h:`${bestCPA.name} es el más eficiente`,p:`CPA de <b>${money(cpa)}</b> con ${bestCPA.ventasPaid} ventas paid. Considerar escalar inversión en este curso.`});}
+    const topCurso=d.cursos.slice().sort((a,b)=>(b.ventasPaid+b.ventasOrg)-(a.ventasPaid+a.ventasOrg))[0];
+    if(topCurso){const tv=topCurso.ventasPaid+topCurso.ventasOrg;const pct=Math.round(tv/totalVentas*100);cursIns.push({cls:pct>40?'watch':'good',k:'CONCENTRACIÓN',h:`${topCurso.name} concentra ${pct}% de ventas`,p:`Con <b>${tv} ventas</b> de ${totalVentas} totales. ${pct>40?'Alta dependencia — diversificar inversión en otros cursos.':'Distribución saludable entre cursos.'}`});}
   }
+  document.getElementById('cursosInsights').innerHTML=cursIns.map(insHTML).join('');
 
-  document.getElementById('mcInsights').innerHTML=mcIns.map(i=>`<div class="ins ${i.cls}"><div class="k mono">${i.k}</div><h4>${i.h}</h4><p>${i.p}</p></div>`).join('');
-  document.getElementById('cursosInsights').innerHTML=cursIns.map(i=>`<div class="ins ${i.cls}"><div class="k mono">${i.k}</div><h4>${i.h}</h4><p>${i.p}</p></div>`).join('');
-
+  // ── Campañas insights (3) ──
   const campIns=[];
-  const camps=metaCampaigns[q]||[];
+  let camps=metaCampaigns[q]||[];
+  if(campStatusFilter!=='all'){camps=camps.filter(c=>c.st===campStatusFilter);}
   if(camps.length){
+    const totalSpend=camps.reduce((s,c)=>s+c.spend,0);
+    const activeCamps=camps.filter(c=>c.st==='active');
+    const pausedCamps=camps.filter(c=>c.st==='paused');
+    campIns.push({cls:'good',k:'INVERSIÓN',h:`${money(totalSpend)} invertidos en ${camps.length} campañas`,p:`<b>${activeCamps.length} activas</b> y <b>${pausedCamps.length} pausadas</b>. ${activeCamps.length>0?'Campañas activas: '+activeCamps.map(c=>c.name).join(', ')+'.':'Todas las campañas están pausadas.'}`});
     const bestCTR=camps.slice().sort((a,b)=>b.ctr-a.ctr)[0];
-    campIns.push({cls:'good',k:'CTR',h:`Mejor CTR: ${bestCTR.name.replace('RO_MX_SAL_PRO_','')}`,p:`CTR de <b>${bestCTR.ctr}%</b>. ${bestCTR.conv>0?'Con '+bestCTR.conv+' conversiones.':'Sin conversiones aún — buen engagement pero revisar embudo.'}`});
+    campIns.push({cls:'good',k:'CTR',h:`Mejor CTR: ${bestCTR.name}`,p:`CTR de <b>${bestCTR.ctr}%</b>. ${bestCTR.conv>0?'Con '+bestCTR.conv+' conversiones — campaña efectiva.':'Sin conversiones aún — buen engagement pero revisar embudo.'}`});
     const highSpend=camps.filter(c=>c.conv===0&&c.spend>3000);
-    if(highSpend.length) campIns.push({cls:'watch',k:'INVERSIÓN',h:`${highSpend.length} campaña${highSpend.length>1?'s':''} con gasto alto sin conversión`,p:`<b>${highSpend.map(c=>c.name.replace('RO_MX_SAL_PRO_','')).join(', ')}</b>: invertimos más de MX$3,000 sin una sola conversión. Evaluar pausa o cambio de creativos.`});
+    if(highSpend.length) campIns.push({cls:'watch',k:'ALERTA',h:`${highSpend.length} campaña${highSpend.length>1?'s':''} con gasto alto sin conversión`,p:`<b>${highSpend.map(c=>c.name).join(', ')}</b>: más de MX$3,000 sin conversión. Evaluar pausa o cambio de creativos.`});
+    else{const avgCPC=camps.reduce((s,c)=>s+c.clicks,0)>0?totalSpend/camps.reduce((s,c)=>s+c.clicks,0):0;campIns.push({cls:avgCPC<5?'good':'watch',k:'CPC',h:`CPC promedio: ${money(avgCPC)}`,p:`Costo por clic promedio en campañas${campStatusFilter!=='all'?' '+campStatusFilter+'s':''}. ${avgCPC<5?'Dentro del rango saludable para el sector educativo.':'Considerar optimizar creativos para reducir CPC.'}`});}
   }
-  document.getElementById('campInsights').innerHTML=campIns.map(i=>`<div class="ins ${i.cls}"><div class="k mono">${i.k}</div><h4>${i.h}</h4><p>${i.p}</p></div>`).join('');
+  document.getElementById('campInsights').innerHTML=campIns.map(insHTML).join('');
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -1445,6 +1505,24 @@ function setPlatform(btn,plat){
   btn.classList.add('active');
   document.getElementById('plat-meta').style.display=plat==='meta'?'block':'none';
   document.getElementById('plat-google').style.display=plat==='google'?'block':'none';
+}
+
+// Campaign date range filter
+function setCampDateRange(val){
+  campDateRange=val;
+  renderMetaCampaigns(currentQ).catch(e=>console.warn('Meta render error',e));
+  renderGoogleCampaigns(currentQ);
+  renderInsightsAll(currentQ);
+}
+
+// Campaign status filter
+function setCampStatus(btn,status){
+  campStatusFilter=status;
+  document.querySelectorAll('[data-status]').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderMetaCampaigns(currentQ).catch(e=>console.warn('Meta render error',e));
+  renderGoogleCampaigns(currentQ);
+  renderInsightsAll(currentQ);
 }
 
 // ═══════════════════════════════════════════════════════════════════
