@@ -391,6 +391,7 @@
         <button class="srcbtn active" data-view="all" onclick="setView(this,'all')">Todo</button>
         <button class="srcbtn" data-view="paid" onclick="setView(this,'paid')">Paid</button>
         <button class="srcbtn" data-view="organic" onclick="setView(this,'organic')">Orgánico</button>
+        <button class="srcbtn" data-view="cortesias" onclick="setView(this,'cortesias')" style="border-color:var(--amber);color:var(--amber)">Cortesías</button>
       </div>
 
       <div class="note info" style="margin-top:0;margin-bottom:16px">
@@ -900,18 +901,19 @@ const cursosData={
   q1:{cursos:[],formRegistros:0,funnel:{impressions:0,clicks:0,lpv:0,formCompletions:0,ventas:0}},
   q4:{
     cursos:[
-      {name:"Productividad con Claude",ventasPaid:10,ventasOrg:1,meta:15,invMeta:7170,invGoogle:0,ingPaid:53625,ingOrg:5363,codigos:"EARLYQ4, SKILLS30, CELEBRA-26, Q4LAST, CYNTHIA45",cortesias:5,diasPauta:26},
-      {name:"Problem Solving",ventasPaid:9,ventasOrg:0,meta:15,invMeta:9900,invGoogle:0,ingPaid:49500,ingOrg:0,codigos:"SALE35, ANIVERSARIO26MC, ANIVERSARIO26M, CELEBRA-26, EARLYQ4",cortesias:9,diasPauta:27},
-      {name:"Leadership & Management",ventasPaid:3,ventasOrg:0,meta:15,invMeta:2205,invGoogle:0,ingPaid:18975,ingOrg:0,codigos:"SKILLS30M, Early Bird",cortesias:2,diasPauta:26},
-      {name:"Strategy",ventasPaid:1,ventasOrg:0,meta:15,invMeta:1654,invGoogle:0,ingPaid:4125,ingOrg:0,codigos:"CELEBRA-26",cortesias:0,diasPauta:26},
-      {name:"Personal Finance & Investing",ventasPaid:3,ventasOrg:0,meta:15,invMeta:6005,invGoogle:0,ingPaid:18563,ingOrg:0,codigos:"EARLYQ4, PFI35MC",cortesias:1,diasPauta:27},
-      {name:"Financial Accounting",ventasPaid:1,ventasOrg:0,meta:15,invMeta:1433,invGoogle:0,ingPaid:6600,ingOrg:0,codigos:"EARLYQ4",cortesias:1,diasPauta:26},
-      {name:"Human-Centered Productivity",ventasPaid:2,ventasOrg:0,meta:15,invMeta:1433,invGoogle:0,ingPaid:9900,ingOrg:0,codigos:"CELEBRA-CA26, LARS30",cortesias:1,diasPauta:26},
-      {name:"Product Management",ventasPaid:1,ventasOrg:0,meta:15,invMeta:956,invGoogle:0,ingPaid:4125,ingOrg:0,codigos:"CELEBRATE26L",cortesias:1,diasPauta:26}
+      {name:"Productividad con Claude",ventasPaid:8,ventasOrg:1,meta:15,invMeta:7170,invGoogle:0,ingPaid:42488,ingOrg:4538,codigos:"EARLYQ4, SKILLS30, CELEBRA-26, Q4LAST",cortesias:17,diasPauta:22,cortesiasDetalle:{"Sin etiqueta":7,Mars:4,"Team CA":3,"Perk mentor":1,"Cortesía directa":1}},
+      {name:"Problem Solving",ventasPaid:9,ventasOrg:0,meta:15,invMeta:9900,invGoogle:0,ingPaid:49500,ingOrg:0,codigos:"SALE35, ANIVERSARIO26MC, ANIVERSARIO26M, CELEBRA-26, EARLYQ4",cortesias:11,diasPauta:27,cortesiasDetalle:{"Cortesía directa":7,Mars:2,"Perspectives/Sofía":1,"Matías Garrido":1}},
+      {name:"Leadership & Management",ventasPaid:3,ventasOrg:0,meta:15,invMeta:2205,invGoogle:0,ingPaid:18975,ingOrg:0,codigos:"SKILLS30M, Early Bird",cortesias:5,diasPauta:22,cortesiasDetalle:{"Sin etiqueta":2,"Perspectives/Sofía":2,Mars:1}},
+      {name:"Strategy",ventasPaid:1,ventasOrg:0,meta:15,invMeta:1654,invGoogle:0,ingPaid:4125,ingOrg:0,codigos:"CELEBRA-26",cortesias:5,diasPauta:0,cortesiasDetalle:{Mars:5}},
+      {name:"Personal Finance & Investing",ventasPaid:2,ventasOrg:1,meta:15,invMeta:6005,invGoogle:0,ingPaid:13200,ingOrg:5363,codigos:"EARLYQ4",cortesias:3,diasPauta:27,cortesiasDetalle:{"Sin etiqueta":2,"Cortesía directa":1}},
+      {name:"Financial Accounting",ventasPaid:1,ventasOrg:0,meta:15,invMeta:1433,invGoogle:0,ingPaid:6600,ingOrg:0,codigos:"EARLYQ4",cortesias:2,diasPauta:22,cortesiasDetalle:{"Perk mentor":1,Mars:1}},
+      {name:"Human-Centered Productivity",ventasPaid:1,ventasOrg:1,meta:15,invMeta:1433,invGoogle:0,ingPaid:4125,ingOrg:5775,codigos:"CELEBRA-CA26",cortesias:2,diasPauta:22,cortesiasDetalle:{"Cortesía directa":1,Mars:1}},
+      {name:"Product Management",ventasPaid:1,ventasOrg:0,meta:15,invMeta:956,invGoogle:0,ingPaid:4125,ingOrg:0,codigos:"CELEBRATE26L",cortesias:1,diasPauta:22,cortesiasDetalle:{"Perspectives/Sofía":1}}
     ],
-    cortesiasTotal:20,
+    cortesiasTotal:46,
+    cortesiasPorOtorgante:{Mars:14,"Cortesía directa":10,"Sin etiqueta":11,"Perspectives/Sofía":4,"Team CA":3,"Perk mentor":2,"Matías Garrido":1},
     formRegistros:220,
-    funnel:{impressions:938591,clicks:14205,lpv:5200,formCompletions:220,ventas:31}
+    funnel:{impressions:938591,clicks:14205,lpv:5200,formCompletions:220,ventas:29}
   }
 };
 
@@ -1263,7 +1265,7 @@ function renderCursos(q){
   const cursos=d.cursos;
   const totalPaid=cursos.reduce((s,c)=>s+c.ventasPaid,0);
   const totalOrg=cursos.reduce((s,c)=>s+c.ventasOrg,0);
-  const totalVentas=view==='paid'?totalPaid:view==='organic'?totalOrg:totalPaid+totalOrg;
+  const totalVentas=view==='paid'?totalPaid:view==='organic'?totalOrg:view==='cortesias'?(d.cortesiasTotal||0):totalPaid+totalOrg;
   const totalIngPaid=cursos.reduce((s,c)=>s+c.ingPaid,0);
   const totalIngOrg=cursos.reduce((s,c)=>s+c.ingOrg,0);
   const totalIng=view==='paid'?totalIngPaid:view==='organic'?totalIngOrg:totalIngPaid+totalIngOrg;
@@ -1273,34 +1275,67 @@ function renderCursos(q){
   const roas=totalInv>0?totalIngPaid/totalInv:0;
   const cpaPaid=totalPaid>0?totalInv/totalPaid:0;
 
-  const heroClass=totalVentas>=15*cursos.length*0.5?'good':'hero';
-  document.getElementById('cursosKpis').innerHTML=`
-    <div class="kc ${heroClass}"><div class="kl">Total ventas${view!=='all'?' ('+view+')':''}</div><div class="kv mono">${totalVentas}</div><div class="kf">${totalPaid} paid + ${totalOrg} orgánicas</div></div>
-    <div class="kc"><div class="kl">Ventas paid</div><div class="kv mono" style="color:${MAG}">${totalPaid}</div><div class="kf">Con código de descuento</div></div>
-    <div class="kc"><div class="kl">Ventas orgánicas</div><div class="kv mono" style="color:${LIME}">${totalOrg}</div><div class="kf">Sin código / directas</div></div>
-    <div class="kc"><div class="kl">Ingresos totales</div><div class="kv mono">${money(totalIng)}</div><div class="kf">paid ${money(totalIngPaid)} + org ${money(totalIngOrg)}</div></div>
-    <div class="kc"><div class="kl">Inversión total</div><div class="kv mono">${money(totalInv)}</div><div class="kf">Meta ${money(totalInvMeta)} + Google ${money(totalInvGoogle)}</div></div>
-    <div class="kc ${roas>=2?'good':roas>=1?'warn':'bad'}"><div class="kl">ROAS (paid)</div><div class="kv mono">${roas.toFixed(2)}x</div><div class="kf">ingreso paid ÷ inversión</div></div>
-    <div class="kc"><div class="kl">CPA paid</div><div class="kv mono">${cpaPaid>0?money(cpaPaid):'—'}</div><div class="kf">inversión ÷ ventas paid</div></div>
-    <div class="kc"><div class="kl">Form. completados</div><div class="kv mono">${d.formRegistros}</div><div class="kf">leads con datos (no venta)</div></div>
-    ${d.cortesiasTotal?`<div class="kc" style="border-left:3px solid var(--amber)"><div class="kl">Cortesías</div><div class="kv mono" style="color:var(--amber)">${d.cortesiasTotal}</div><div class="kf">inscritos sin pago registrado</div></div>`:''}
-  `;
+  if(view==='cortesias'){
+    const cTotal=d.cortesiasTotal||cursos.reduce((s,c)=>s+(c.cortesias||0),0);
+    const otorgantes=d.cortesiasPorOtorgante||{};
+    document.getElementById('cursosKpis').innerHTML=`
+      <div class="kc" style="border-left:3px solid var(--amber)"><div class="kl">Total cortesías</div><div class="kv mono" style="color:var(--amber)">${cTotal}</div><div class="kf">inscritos sin pago registrado</div></div>
+      ${Object.entries(otorgantes).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div class="kc"><div class="kl">${k}</div><div class="kv mono" style="color:var(--amber)">${v}</div><div class="kf">${(v/cTotal*100).toFixed(0)}% del total</div></div>`).join('')}
+    `;
+  } else {
+    const heroClass=totalVentas>=15*cursos.length*0.5?'good':'hero';
+    document.getElementById('cursosKpis').innerHTML=`
+      <div class="kc ${heroClass}"><div class="kl">Total ventas${view!=='all'?' ('+view+')':''}</div><div class="kv mono">${totalVentas}</div><div class="kf">${totalPaid} paid + ${totalOrg} orgánicas</div></div>
+      ${view!=='organic'?`<div class="kc"><div class="kl">Ventas paid</div><div class="kv mono" style="color:${MAG}">${totalPaid}</div><div class="kf">Con código de descuento</div></div>`:''}
+      ${view!=='paid'?`<div class="kc"><div class="kl">Ventas orgánicas</div><div class="kv mono" style="color:${LIME}">${totalOrg}</div><div class="kf">Sin código / directas</div></div>`:''}
+      <div class="kc"><div class="kl">Ingresos totales</div><div class="kv mono">${money(totalIng)}</div><div class="kf">paid ${money(totalIngPaid)} + org ${money(totalIngOrg)}</div></div>
+      <div class="kc"><div class="kl">Inversión total</div><div class="kv mono">${money(totalInv)}</div><div class="kf">Meta ${money(totalInvMeta)} + Google ${money(totalInvGoogle)}</div></div>
+      <div class="kc ${roas>=2?'good':roas>=1?'warn':'bad'}"><div class="kl">ROAS (paid)</div><div class="kv mono">${roas.toFixed(2)}x</div><div class="kf">ingreso paid ÷ inversión</div></div>
+      <div class="kc"><div class="kl">CPA paid</div><div class="kv mono">${cpaPaid>0?money(cpaPaid):'—'}</div><div class="kf">inversión ÷ ventas paid</div></div>
+      <div class="kc"><div class="kl">Form. completados</div><div class="kv mono">${d.formRegistros}</div><div class="kf">leads con datos (no venta)</div></div>
+      ${d.cortesiasTotal?`<div class="kc" style="border-left:3px solid var(--amber)"><div class="kl">Cortesías</div><div class="kv mono" style="color:var(--amber)">${d.cortesiasTotal}</div><div class="kf">inscritos sin pago registrado</div></div>`:''}
+    `;
+  }
 
-  document.getElementById('cursosProgress').innerHTML=cursos.map(c=>{
-    const v=view==='paid'?c.ventasPaid:view==='organic'?c.ventasOrg:c.ventasPaid+c.ventasOrg;
-    const p=Math.min(Math.round(v/c.meta*100),100);
-    const col=p>=100?LIME:(p>=50?AMB:MAG);
-    return `<div class="pbar-wrap"><div class="pbar-head"><span class="pbar-name">${c.name}</span><span class="pbar-vals"><b>${v}</b> / ${c.meta} ${view==='all'?'<span style="font-size:10px;color:'+MAG+'">'+c.ventasPaid+'p</span> + <span style="font-size:10px;color:'+LIME+'">'+c.ventasOrg+'o</span>':''}</span></div><div class="pbar-track"><div class="pbar-fill" style="width:${p}%;background:${col}"></div><span class="pbar-pct">${p}%</span></div></div>`;
-  }).join('');
+  if(view==='cortesias'){
+    const maxCort=Math.max(...cursos.map(c=>c.cortesias||0),1);
+    document.getElementById('cursosProgress').innerHTML=cursos.map(c=>{
+      const v=c.cortesias||0;
+      const p=Math.min(Math.round(v/maxCort*100),100);
+      return `<div class="pbar-wrap"><div class="pbar-head"><span class="pbar-name">${c.name}</span><span class="pbar-vals" style="color:var(--amber)"><b>${v}</b> cortesías</span></div><div class="pbar-track"><div class="pbar-fill" style="width:${p}%;background:var(--amber)"></div><span class="pbar-pct">${v}</span></div></div>`;
+    }).join('');
+  } else {
+    document.getElementById('cursosProgress').innerHTML=cursos.map(c=>{
+      const v=view==='paid'?c.ventasPaid:view==='organic'?c.ventasOrg:c.ventasPaid+c.ventasOrg;
+      const p=Math.min(Math.round(v/c.meta*100),100);
+      const col=p>=100?LIME:(p>=50?AMB:MAG);
+      return `<div class="pbar-wrap"><div class="pbar-head"><span class="pbar-name">${c.name}</span><span class="pbar-vals"><b>${v}</b> / ${c.meta} ${view==='all'?'<span style="font-size:10px;color:'+MAG+'">'+c.ventasPaid+'p</span> + <span style="font-size:10px;color:'+LIME+'">'+c.ventasOrg+'o</span>':''}</span></div><div class="pbar-track"><div class="pbar-fill" style="width:${p}%;background:${col}"></div><span class="pbar-pct">${p}%</span></div></div>`;
+    }).join('');
+  }
 
-  const tbody=document.getElementById('cpaTable').querySelector('tbody');
-  tbody.innerHTML=cursos.map(c=>{
-    const inv=c.invMeta+c.invGoogle;
-    const cpa=c.ventasPaid>0?inv/c.ventasPaid:null;
-    const roasC=inv>0&&c.ingPaid>0?(c.ingPaid/inv).toFixed(2)+'x':'—';
-    const cpaColor=cpa===null?MUT:cpa<2000?'#0A7F58':cpa<4000?INK:MAG;
-    return `<tr><td class="name">${c.name}</td><td class="mono">${money(inv)}</td><td class="mono" style="color:var(--muted)">${c.diasPauta||'—'}</td><td class="mono" style="color:${MAG};font-weight:700">${c.ventasPaid}</td><td class="mono" style="color:${LIME}">${c.ventasOrg}</td><td class="mono" style="color:var(--amber)">${c.cortesias||0}</td><td class="mono" style="color:${cpaColor};font-weight:700">${cpa?money(cpa):'—'}</td><td class="mono">${money(c.ingPaid+c.ingOrg)}</td><td class="mono" style="font-weight:600">${roasC}</td></tr>`;
-  }).join('')+`<tr style="border-top:2px solid var(--line)"><td class="name" style="font-weight:700">Total</td><td class="mono" style="font-weight:700">${money(totalInv)}</td><td class="mono">—</td><td class="mono" style="font-weight:700;color:${MAG}">${totalPaid}</td><td class="mono" style="font-weight:700;color:${LIME}">${totalOrg}</td><td class="mono" style="font-weight:700;color:var(--amber)">${d.cortesiasTotal||cursos.reduce((s,c)=>s+(c.cortesias||0),0)}</td><td class="mono" style="font-weight:700">${cpaPaid>0?money(cpaPaid):'—'}</td><td class="mono" style="font-weight:700">${money(totalIngPaid+totalIngOrg)}</td><td class="mono" style="font-weight:700">${roas.toFixed(2)}x</td></tr>`;
+  const cpaTableEl=document.getElementById('cpaTable');
+  const thead=cpaTableEl.querySelector('thead');
+  const tbody=cpaTableEl.querySelector('tbody');
+  if(view==='cortesias'){
+    const allGrantors=[...new Set(cursos.flatMap(c=>Object.keys(c.cortesiasDetalle||{})))];
+    thead.innerHTML=`<tr><th>Curso / Bootcamp</th><th>Total</th>${allGrantors.map(g=>`<th>${g}</th>`).join('')}</tr>`;
+    const totalCort=d.cortesiasTotal||cursos.reduce((s,c)=>s+(c.cortesias||0),0);
+    tbody.innerHTML=cursos.map(c=>{
+      const det=c.cortesiasDetalle||{};
+      return `<tr><td class="name">${c.name}</td><td class="mono" style="color:var(--amber);font-weight:700">${c.cortesias||0}</td>${allGrantors.map(g=>`<td class="mono">${det[g]||'—'}</td>`).join('')}</tr>`;
+    }).join('')+`<tr style="border-top:2px solid var(--line)"><td class="name" style="font-weight:700">Total</td><td class="mono" style="font-weight:700;color:var(--amber)">${totalCort}</td>${allGrantors.map(g=>{const v=(d.cortesiasPorOtorgante||{})[g]||cursos.reduce((s,c)=>s+((c.cortesiasDetalle||{})[g]||0),0);return `<td class="mono" style="font-weight:700">${v}</td>`;}).join('')}</tr>`;
+  } else {
+    const showOrg=view!=='paid';
+    const showPaid=view!=='organic';
+    thead.innerHTML=`<tr><th>Curso / Bootcamp</th><th>Inversión</th><th>Días pauta</th>${showPaid?'<th>Ventas paid</th>':''}${showOrg?'<th>Ventas orgánicas</th>':''}<th>Cortesías</th>${showPaid?'<th>CPA paid</th>':''}<th>Ingreso total</th>${showPaid?'<th>ROAS</th>':''}</tr>`;
+    tbody.innerHTML=cursos.map(c=>{
+      const inv=c.invMeta+c.invGoogle;
+      const cpa=c.ventasPaid>0?inv/c.ventasPaid:null;
+      const roasC=inv>0&&c.ingPaid>0?(c.ingPaid/inv).toFixed(2)+'x':'—';
+      const cpaColor=cpa===null?MUT:cpa<2000?'#0A7F58':cpa<4000?INK:MAG;
+      return `<tr><td class="name">${c.name}</td><td class="mono">${money(inv)}</td><td class="mono" style="color:var(--muted)">${c.diasPauta!==undefined?c.diasPauta:'—'}</td>${showPaid?`<td class="mono" style="color:${MAG};font-weight:700">${c.ventasPaid}</td>`:''}${showOrg?`<td class="mono" style="color:${LIME}">${c.ventasOrg}</td>`:''}<td class="mono" style="color:var(--amber)">${c.cortesias||0}</td>${showPaid?`<td class="mono" style="color:${cpaColor};font-weight:700">${cpa?money(cpa):'—'}</td>`:''}<td class="mono">${money(c.ingPaid+c.ingOrg)}</td>${showPaid?`<td class="mono" style="font-weight:600">${roasC}</td>`:''}</tr>`;
+    }).join('')+`<tr style="border-top:2px solid var(--line)"><td class="name" style="font-weight:700">Total</td><td class="mono" style="font-weight:700">${money(totalInv)}</td><td class="mono">—</td>${showPaid?`<td class="mono" style="font-weight:700;color:${MAG}">${totalPaid}</td>`:''}${showOrg?`<td class="mono" style="font-weight:700;color:${LIME}">${totalOrg}</td>`:''}<td class="mono" style="font-weight:700;color:var(--amber)">${d.cortesiasTotal||cursos.reduce((s,c)=>s+(c.cortesias||0),0)}</td>${showPaid?`<td class="mono" style="font-weight:700">${cpaPaid>0?money(cpaPaid):'—'}</td>`:''}<td class="mono" style="font-weight:700">${money(totalIngPaid+totalIngOrg)}</td>${showPaid?`<td class="mono" style="font-weight:700">${roas.toFixed(2)}x</td>`:''}</tr>`;
+  }
 
   kill('revenueChart');
   const rCtx=document.getElementById('revenueChart');
