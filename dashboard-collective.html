@@ -325,6 +325,7 @@
       <div class="stitle">Última actualización</div>
       <span class="spill" id="updateDate"></span>
       <span class="spill" id="updateBy"></span>
+      <div id="snapshotInfo" style="margin-top:4px"></div>
     </div>
   </aside>
 
@@ -418,7 +419,7 @@
         <div class="cardsub">Solo ventas atribuidas a paid. <b>CPA más bajo = más eficiente.</b></div>
         <div class="tbl-wrap" style="border:none">
           <table id="cpaTable">
-            <thead><tr><th>Curso / Bootcamp</th><th>Inversión</th><th>Ventas paid</th><th>Ventas orgánicas</th><th>CPA paid</th><th>Ingreso total</th><th>ROAS</th></tr></thead>
+            <thead><tr><th>Curso / Bootcamp</th><th>Inversión</th><th>Días pauta</th><th>Ventas paid</th><th>Ventas orgánicas</th><th>Cortesías</th><th>CPA paid</th><th>Ingreso total</th><th>ROAS</th></tr></thead>
             <tbody></tbody>
           </table>
         </div>
@@ -541,16 +542,31 @@
 // ═══════════════════════════════════════════════════════════════════
 // DASHBOARD META — update this on every publish
 // ═══════════════════════════════════════════════════════════════════
-const DASH_UPDATE={date:'2026-11-03T18:00:00Z',by:'Luz'};
+const DASH_UPDATE={date:'2026-11-03T22:00:00Z',by:'Luz'};
+
+// ═══════════════════════════════════════════════════════════════════
+// SNAPSHOT META — when the hardcoded data objects were last captured
+// Update this BEFORE publishing. The data lives in Git (safe from
+// Netlify failures), but this timestamp confirms the objects below
+// reflect the latest quarterly numbers.
+// ═══════════════════════════════════════════════════════════════════
+const SNAPSHOT_META={date:'2026-11-03T22:00:00Z',by:'Luz',note:'Q4 corte 3-nov — 31 ventas con pago + 20 cortesías (Sheets) + Meta API live'};
 
 function renderUpdateInfo(){
-  const d=new Date(DASH_UPDATE.date);
   const pad=n=>String(n).padStart(2,'0');
-  const dateStr=`${pad(d.getUTCDate())}/${pad(d.getUTCMonth()+1)}/${d.getUTCFullYear()} ${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())} GMT`;
+  const fmt=dt=>{const d=new Date(dt);return `${pad(d.getUTCDate())}/${pad(d.getUTCMonth()+1)}/${d.getUTCFullYear()} ${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())} GMT`;};
   const el=document.getElementById('updateDate');
   const byEl=document.getElementById('updateBy');
-  if(el)el.textContent=dateStr;
+  if(el)el.textContent=fmt(DASH_UPDATE.date);
   if(byEl)byEl.textContent='por '+DASH_UPDATE.by;
+
+  const snapEl=document.getElementById('snapshotInfo');
+  if(snapEl){
+    const pubMs=new Date(DASH_UPDATE.date).getTime();
+    const snapMs=new Date(SNAPSHOT_META.date).getTime();
+    const stale=pubMs-snapMs>86400000;
+    snapEl.innerHTML=`<span style="color:${stale?'#F5A524':'#6B7280'};font-size:10px">${stale?'⚠ ':''}Snapshot: ${fmt(SNAPSHOT_META.date)}</span>`;
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -884,17 +900,18 @@ const cursosData={
   q1:{cursos:[],formRegistros:0,funnel:{impressions:0,clicks:0,lpv:0,formCompletions:0,ventas:0}},
   q4:{
     cursos:[
-      {name:"Productividad con Claude",ventasPaid:9,ventasOrg:15,meta:15,invMeta:7170,invGoogle:0,ingPaid:49088,ingOrg:9900,codigos:"EARLYQ4, SKILLS30, CELEBRA-26, Q4LAST"},
-      {name:"Problem Solving",ventasPaid:9,ventasOrg:9,meta:15,invMeta:9892,invGoogle:0,ingPaid:49500,ingOrg:0,codigos:"SALE35, ANIVERSARIO26MC, ANIVERSARIO26M, CELEBRA-26, EARLYQ4"},
-      {name:"Leadership & Management",ventasPaid:3,ventasOrg:3,meta:15,invMeta:2205,invGoogle:0,ingPaid:18975,ingOrg:0,codigos:"SKILLS30M, Early Bird"},
-      {name:"Strategy",ventasPaid:1,ventasOrg:5,meta:15,invMeta:1654,invGoogle:0,ingPaid:4125,ingOrg:0,codigos:"CELEBRA-26"},
-      {name:"Personal Finance & Investing",ventasPaid:2,ventasOrg:4,meta:15,invMeta:6005,invGoogle:0,ingPaid:13200,ingOrg:5362,codigos:"EARLYQ4"},
-      {name:"Financial Accounting",ventasPaid:1,ventasOrg:2,meta:15,invMeta:1433,invGoogle:0,ingPaid:6600,ingOrg:0,codigos:"EARLYQ4"},
-      {name:"Human-Centered Productivity",ventasPaid:1,ventasOrg:3,meta:15,invMeta:1433,invGoogle:0,ingPaid:4125,ingOrg:5775,codigos:"CELEBRA-CA26"},
-      {name:"Product Management",ventasPaid:1,ventasOrg:0,meta:15,invMeta:956,invGoogle:0,ingPaid:4125,ingOrg:0,codigos:"CELEBRATE26L"}
+      {name:"Productividad con Claude",ventasPaid:10,ventasOrg:1,meta:15,invMeta:7170,invGoogle:0,ingPaid:53625,ingOrg:5363,codigos:"EARLYQ4, SKILLS30, CELEBRA-26, Q4LAST, CYNTHIA45",cortesias:5,diasPauta:26},
+      {name:"Problem Solving",ventasPaid:9,ventasOrg:0,meta:15,invMeta:9900,invGoogle:0,ingPaid:49500,ingOrg:0,codigos:"SALE35, ANIVERSARIO26MC, ANIVERSARIO26M, CELEBRA-26, EARLYQ4",cortesias:9,diasPauta:27},
+      {name:"Leadership & Management",ventasPaid:3,ventasOrg:0,meta:15,invMeta:2205,invGoogle:0,ingPaid:18975,ingOrg:0,codigos:"SKILLS30M, Early Bird",cortesias:2,diasPauta:26},
+      {name:"Strategy",ventasPaid:1,ventasOrg:0,meta:15,invMeta:1654,invGoogle:0,ingPaid:4125,ingOrg:0,codigos:"CELEBRA-26",cortesias:0,diasPauta:26},
+      {name:"Personal Finance & Investing",ventasPaid:3,ventasOrg:0,meta:15,invMeta:6005,invGoogle:0,ingPaid:18563,ingOrg:0,codigos:"EARLYQ4, PFI35MC",cortesias:1,diasPauta:27},
+      {name:"Financial Accounting",ventasPaid:1,ventasOrg:0,meta:15,invMeta:1433,invGoogle:0,ingPaid:6600,ingOrg:0,codigos:"EARLYQ4",cortesias:1,diasPauta:26},
+      {name:"Human-Centered Productivity",ventasPaid:2,ventasOrg:0,meta:15,invMeta:1433,invGoogle:0,ingPaid:9900,ingOrg:0,codigos:"CELEBRA-CA26, LARS30",cortesias:1,diasPauta:26},
+      {name:"Product Management",ventasPaid:1,ventasOrg:0,meta:15,invMeta:956,invGoogle:0,ingPaid:4125,ingOrg:0,codigos:"CELEBRATE26L",cortesias:1,diasPauta:26}
     ],
-    formRegistros:195,
-    funnel:{impressions:884005,clicks:13394,lpv:5023,formCompletions:195,ventas:68}
+    cortesiasTotal:20,
+    formRegistros:220,
+    funnel:{impressions:938591,clicks:14205,lpv:5200,formCompletions:220,ventas:31}
   }
 };
 
@@ -1036,11 +1053,11 @@ const metaCampaigns={
   ],
   q4:[
     {name:"Campaña Aniversario",obj:"Engagement",st:"paused",spend:11564.47,imp:318601,reach:205339,clicks:4332,ctr:1.36,cpc:2.67,conv:0,convType:"aplicaciones",cpa:null},
-    {name:"Problem_Solving",obj:"Engagement",st:"active",spend:9892.22,imp:239797,reach:157000,clicks:4064,ctr:1.69,cpc:2.43,conv:9,convType:"aplicaciones",cpa:1099.14},
-    {name:"Personal_Finance_v2",obj:"Engagement",st:"active",spend:6004.86,imp:197073,reach:144000,clicks:3003,ctr:1.52,cpc:2.00,conv:2,convType:"aplicaciones",cpa:3002.43},
-    {name:"Masterclass_v2",obj:"Leads",st:"active",spend:3933.49,imp:53977,reach:24500,clicks:802,ctr:1.49,cpc:4.90,conv:184,convType:"registros",cpa:21.38},
-    {name:"RMKT",obj:"Engagement",st:"active",spend:5408.15,imp:95100,reach:66000,clicks:1616,ctr:1.70,cpc:3.35,conv:10,convType:"aplicaciones",cpa:540.82},
-    {name:"Carrusel",obj:"Engagement",st:"paused",spend:1767.16,imp:33434,reach:23100,clicks:379,ctr:1.13,cpc:4.66,conv:1,convType:"aplicaciones",cpa:1767.16}
+    {name:"Problem_Solving",obj:"Engagement",st:"active",spend:9900.29,imp:239997,reach:154412,clicks:4066,ctr:1.69,cpc:2.43,conv:22,convType:"aplicaciones",cpa:450.01},
+    {name:"Personal_Finance_v2",obj:"Engagement",st:"active",spend:6005.41,imp:197112,reach:146008,clicks:3003,ctr:1.52,cpc:2.00,conv:14,convType:"aplicaciones",cpa:428.96},
+    {name:"RMKT",obj:"Engagement",st:"active",spend:5419.70,imp:95388,reach:27804,clicks:1619,ctr:1.70,cpc:3.35,conv:19,convType:"aplicaciones",cpa:285.25},
+    {name:"Masterclass_v2",obj:"Leads",st:"active",spend:3943.79,imp:54059,reach:23268,clicks:806,ctr:1.49,cpc:4.89,conv:112,convType:"registros",cpa:35.21},
+    {name:"Carrusel",obj:"Engagement",st:"paused",spend:1767.16,imp:33434,reach:23839,clicks:379,ctr:1.13,cpc:4.66,conv:1,convType:"aplicaciones",cpa:1767.16}
   ]
 };
 
@@ -1266,6 +1283,7 @@ function renderCursos(q){
     <div class="kc ${roas>=2?'good':roas>=1?'warn':'bad'}"><div class="kl">ROAS (paid)</div><div class="kv mono">${roas.toFixed(2)}x</div><div class="kf">ingreso paid ÷ inversión</div></div>
     <div class="kc"><div class="kl">CPA paid</div><div class="kv mono">${cpaPaid>0?money(cpaPaid):'—'}</div><div class="kf">inversión ÷ ventas paid</div></div>
     <div class="kc"><div class="kl">Form. completados</div><div class="kv mono">${d.formRegistros}</div><div class="kf">leads con datos (no venta)</div></div>
+    ${d.cortesiasTotal?`<div class="kc" style="border-left:3px solid var(--amber)"><div class="kl">Cortesías</div><div class="kv mono" style="color:var(--amber)">${d.cortesiasTotal}</div><div class="kf">inscritos sin pago registrado</div></div>`:''}
   `;
 
   document.getElementById('cursosProgress').innerHTML=cursos.map(c=>{
@@ -1281,8 +1299,8 @@ function renderCursos(q){
     const cpa=c.ventasPaid>0?inv/c.ventasPaid:null;
     const roasC=inv>0&&c.ingPaid>0?(c.ingPaid/inv).toFixed(2)+'x':'—';
     const cpaColor=cpa===null?MUT:cpa<2000?'#0A7F58':cpa<4000?INK:MAG;
-    return `<tr><td class="name">${c.name}</td><td class="mono">${money(inv)}</td><td class="mono" style="color:${MAG};font-weight:700">${c.ventasPaid}</td><td class="mono" style="color:${LIME}">${c.ventasOrg}</td><td class="mono" style="color:${cpaColor};font-weight:700">${cpa?money(cpa):'—'}</td><td class="mono">${money(c.ingPaid+c.ingOrg)}</td><td class="mono" style="font-weight:600">${roasC}</td></tr>`;
-  }).join('')+`<tr style="border-top:2px solid var(--line)"><td class="name" style="font-weight:700">Total</td><td class="mono" style="font-weight:700">${money(totalInv)}</td><td class="mono" style="font-weight:700;color:${MAG}">${totalPaid}</td><td class="mono" style="font-weight:700;color:${LIME}">${totalOrg}</td><td class="mono" style="font-weight:700">${cpaPaid>0?money(cpaPaid):'—'}</td><td class="mono" style="font-weight:700">${money(totalIngPaid+totalIngOrg)}</td><td class="mono" style="font-weight:700">${roas.toFixed(2)}x</td></tr>`;
+    return `<tr><td class="name">${c.name}</td><td class="mono">${money(inv)}</td><td class="mono" style="color:var(--muted)">${c.diasPauta||'—'}</td><td class="mono" style="color:${MAG};font-weight:700">${c.ventasPaid}</td><td class="mono" style="color:${LIME}">${c.ventasOrg}</td><td class="mono" style="color:var(--amber)">${c.cortesias||0}</td><td class="mono" style="color:${cpaColor};font-weight:700">${cpa?money(cpa):'—'}</td><td class="mono">${money(c.ingPaid+c.ingOrg)}</td><td class="mono" style="font-weight:600">${roasC}</td></tr>`;
+  }).join('')+`<tr style="border-top:2px solid var(--line)"><td class="name" style="font-weight:700">Total</td><td class="mono" style="font-weight:700">${money(totalInv)}</td><td class="mono">—</td><td class="mono" style="font-weight:700;color:${MAG}">${totalPaid}</td><td class="mono" style="font-weight:700;color:${LIME}">${totalOrg}</td><td class="mono" style="font-weight:700;color:var(--amber)">${d.cortesiasTotal||cursos.reduce((s,c)=>s+(c.cortesias||0),0)}</td><td class="mono" style="font-weight:700">${cpaPaid>0?money(cpaPaid):'—'}</td><td class="mono" style="font-weight:700">${money(totalIngPaid+totalIngOrg)}</td><td class="mono" style="font-weight:700">${roas.toFixed(2)}x</td></tr>`;
 
   kill('revenueChart');
   const rCtx=document.getElementById('revenueChart');
